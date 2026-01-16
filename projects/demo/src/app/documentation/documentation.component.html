@@ -1,0 +1,344 @@
+<section class="documentation">
+  <h2>Documentation</h2>
+
+  <!-- Installation -->
+  <article class="doc-section">
+    <h3>Installation</h3>
+    <pre><code><span class="token function">npm</span> install &#64;softwarity/rail-nav</code></pre>
+  </article>
+
+  <!-- Usage -->
+  <article class="doc-section">
+    <h3>Usage</h3>
+    <pre><code><span class="token keyword">import</span> <span class="token punctuation">&#123;</span>
+  RailnavComponent<span class="token punctuation">,</span>
+  RailnavContainerComponent<span class="token punctuation">,</span>
+  RailnavContentComponent
+<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'&#64;softwarity/rail-nav'</span><span class="token punctuation">;</span>
+
+<span class="token decorator">&#64;Component</span><span class="token punctuation">(&#123;</span>
+  <span class="token property">imports</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">template</span><span class="token punctuation">:</span> <span class="token template-string">`
+    <span class="token tag">&lt;rail-nav-container&gt;</span>
+      <span class="token tag">&lt;rail-nav</span> <span class="token attr-name">title</span>=<span class="token attr-value">"My App"</span> <span class="token attr-name">subtitle</span>=<span class="token attr-value">"v1.0"</span><span class="token tag">&gt;</span>
+        <span class="token comment">&lt;!-- Navigation items --&gt;</span>
+      <span class="token tag">&lt;/rail-nav&gt;</span>
+      <span class="token tag">&lt;rail-nav-content&gt;</span>
+        <span class="token comment">&lt;!-- Page content --&gt;</span>
+      <span class="token tag">&lt;/rail-nav-content&gt;</span>
+    <span class="token tag">&lt;/rail-nav-container&gt;</span>
+  `</span>
+<span class="token punctuation">&#125;)</span>
+<span class="token keyword">export class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;&#125;</span></code></pre>
+  </article>
+
+  <!-- API - RailnavComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavComponent</h3>
+    <p>The main navigation rail component. Extends <code>MatSidenav</code>.</p>
+    <p>Includes a built-in animated burger icon header with optional title/subtitle.</p>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>collapsedWidth</code></td>
+            <td><code>number</code></td>
+            <td><code>72</code></td>
+            <td>Width in pixels when collapsed (icon-only mode)</td>
+          </tr>
+          <tr>
+            <td><code>expandedWidth</code></td>
+            <td><code>number | 'auto'</code></td>
+            <td><code>'auto'</code></td>
+            <td>Width when expanded. Use <code>'auto'</code> for content-based width or a number in pixels</td>
+          </tr>
+          <tr>
+            <td><code>railPosition</code></td>
+            <td><code>'start' | 'end'</code></td>
+            <td><code>'start'</code></td>
+            <td>Position of the rail (left or right). Icon flips for 'end'</td>
+          </tr>
+          <tr>
+            <td><code>title</code></td>
+            <td><code>string</code></td>
+            <td><code>undefined</code></td>
+            <td>Title displayed next to burger when expanded</td>
+          </tr>
+          <tr>
+            <td><code>subtitle</code></td>
+            <td><code>string</code></td>
+            <td><code>undefined</code></td>
+            <td>Subtitle displayed below title when expanded</td>
+          </tr>
+          <tr>
+            <td><code>headerHeight</code></td>
+            <td><code>number</code></td>
+            <td><code>56</code></td>
+            <td>Header height in pixels (to match toolbar height)</td>
+          </tr>
+          <tr>
+            <td><code>hideDefaultHeader</code></td>
+            <td><code>boolean</code></td>
+            <td><code>false</code></td>
+            <td>Hide the default header to provide custom content</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Properties & Methods</h4>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>expanded</code></td>
+            <td><code>Signal&lt;boolean&gt;</code></td>
+            <td>Read the current expanded state</td>
+          </tr>
+          <tr>
+            <td><code>toggleExpanded()</code></td>
+            <td><code>void</code></td>
+            <td>Toggle between collapsed and expanded</td>
+          </tr>
+          <tr>
+            <td><code>expand()</code></td>
+            <td><code>void</code></td>
+            <td>Expand the rail</td>
+          </tr>
+          <tr>
+            <td><code>collapse()</code></td>
+            <td><code>void</code></td>
+            <td>Collapse the rail</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- API - RailnavContainerComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavContainerComponent</h3>
+    <p>Container component. Extends <code>MatSidenavContainer</code>.</p>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>showBackdrop</code></td>
+            <td><code>boolean</code></td>
+            <td><code>true</code></td>
+            <td>Show backdrop overlay when expanded</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- API - RailnavContentComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavContentComponent</h3>
+    <p>Content area component. Extends <code>MatSidenavContent</code>.</p>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>collapsedWidth</code></td>
+            <td><code>number</code></td>
+            <td><code>72</code></td>
+            <td>Must match RailnavComponent's collapsedWidth</td>
+          </tr>
+          <tr>
+            <td><code>railPosition</code></td>
+            <td><code>'start' | 'end'</code></td>
+            <td><code>'start'</code></td>
+            <td>Must match RailnavComponent's position</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- API - RailnavItemComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavItemComponent</h3>
+    <p>Navigation item component with MD3 pill animation between collapsed and expanded modes.</p>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>routerLink</code></td>
+            <td><code>string | any[]</code></td>
+            <td><code>undefined</code></td>
+            <td>Router link for navigation (renders as anchor)</td>
+          </tr>
+          <tr>
+            <td><code>label</code></td>
+            <td><code>string</code></td>
+            <td><code>undefined</code></td>
+            <td>Label text displayed (below icon collapsed, beside icon expanded)</td>
+          </tr>
+          <tr>
+            <td><code>badge</code></td>
+            <td><code>string | number | boolean</code></td>
+            <td><code>undefined</code></td>
+            <td>Badge value. Use <code>true</code> or <code>''</code> for a small dot badge</td>
+          </tr>
+          <tr>
+            <td><code>active</code></td>
+            <td><code>boolean</code></td>
+            <td><code>false</code></td>
+            <td>Whether this item is active (for non-router usage)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Outputs</h4>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Output</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>itemClick</code></td>
+            <td><code>void</code></td>
+            <td>Emitted when item is clicked (for non-router usage). Automatically collapses the rail.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Usage</h4>
+    <pre><code><span class="token tag">&lt;rail-nav-item</span>
+  <span class="token attr-name">[label]</span>=<span class="token attr-value">"'Home'"</span>
+  <span class="token attr-name">[badge]</span>=<span class="token attr-value">"3"</span>
+  <span class="token attr-name">[routerLink]</span>=<span class="token attr-value">"'/home'"</span><span class="token tag">&gt;</span>
+  <span class="token tag">&lt;mat-icon&gt;</span>home<span class="token tag">&lt;/mat-icon&gt;</span>
+<span class="token tag">&lt;/rail-nav-item&gt;</span>
+
+<span class="token comment">&lt;!-- Without router --&gt;</span>
+<span class="token tag">&lt;rail-nav-item</span>
+  <span class="token attr-name">[label]</span>=<span class="token attr-value">"'Settings'"</span>
+  <span class="token attr-name">[active]</span>=<span class="token attr-value">"isSettingsActive"</span>
+  <span class="token attr-name">(itemClick)</span>=<span class="token attr-value">"onSettingsClick()"</span><span class="token tag">&gt;</span>
+  <span class="token tag">&lt;mat-icon&gt;</span>settings<span class="token tag">&lt;/mat-icon&gt;</span>
+<span class="token tag">&lt;/rail-nav-item&gt;</span></code></pre>
+  </article>
+
+  <!-- Features -->
+  <article class="doc-section">
+    <h3>Features</h3>
+    <ul class="feature-list">
+      <li><strong>Material Design 3</strong> - Implements the Navigation Rail pattern from MD3</li>
+      <li><strong>Animated Burger</strong> - Built-in burger icon with 90° rotation animation</li>
+      <li><strong>Title & Subtitle</strong> - Optional branding next to the burger</li>
+      <li><strong>Navigation Items</strong> - <code>rail-nav-item</code> with MD3 pill animation, badges, and router support</li>
+      <li><strong>Extends Material</strong> - Built on top of <code>MatSidenav</code> for reliability</li>
+      <li><strong>Expand/Collapse</strong> - Smooth transition between rail and drawer with adaptive width</li>
+      <li><strong>Backdrop</strong> - Optional backdrop overlay when expanded</li>
+      <li><strong>Position</strong> - Support for left (start) or right (end) positioning</li>
+      <li><strong>Dark Mode</strong> - Automatically adapts to light/dark color scheme</li>
+      <li><strong>SCSS Theming</strong> - Customizable via SCSS mixin following Angular Material pattern</li>
+    </ul>
+  </article>
+
+  <!-- SCSS Theme Override -->
+  <article class="doc-section">
+    <h3>SCSS Theme Override</h3>
+    <p>Use the SCSS mixin to customize colors following the Angular Material pattern:</p>
+    <pre><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+
+<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
+    <span class="token property">backdrop-color</span><span class="token punctuation">:</span> rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.5)<span class="token punctuation">,</span>
+    <span class="token property">primary</span><span class="token punctuation">:</span> #6200ea<span class="token punctuation">,</span>
+    <span class="token property">surface-color</span><span class="token punctuation">:</span> #f5f5f5<span class="token punctuation">,</span>
+  <span class="token punctuation">))</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+    <h4>Available Tokens</h4>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>backdrop-color</code></td><td>Background color for the backdrop overlay</td></tr>
+          <tr><td><code>surface-color</code></td><td>Background color for the rail</td></tr>
+          <tr><td><code>surface-container-high</code></td><td>Background color for hover states</td></tr>
+          <tr><td><code>on-surface</code></td><td>Text color for primary content (title, icons)</td></tr>
+          <tr><td><code>on-surface-variant</code></td><td>Text color for secondary content (subtitle, labels)</td></tr>
+          <tr><td><code>secondary-container</code></td><td>Background color for active items</td></tr>
+          <tr><td><code>on-secondary-container</code></td><td>Text color for active items</td></tr>
+          <tr><td><code>primary</code></td><td>Focus ring color</td></tr>
+          <tr><td><code>error</code></td><td>Badge background color</td></tr>
+          <tr><td><code>on-error</code></td><td>Badge text color</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- CSS Customization -->
+  <article class="doc-section">
+    <h3>CSS Custom Properties</h3>
+    <p>You can also use CSS custom properties directly:</p>
+    <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> rgba(0, 0, 0, 0.5)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-surface</span><span class="token punctuation">:</span> #1c1b1f<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-surface-variant</span><span class="token punctuation">:</span> #49454f<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-secondary-container</span><span class="token punctuation">:</span> #e8def8<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-secondary-container</span><span class="token punctuation">:</span> #1d192b<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-primary</span><span class="token punctuation">:</span> #6750a4<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-error</span><span class="token punctuation">:</span> #b3261e<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-error</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+    <p>By default, the component uses Material Design 3 system tokens (<code>--mat-sys-*</code>) as fallbacks.</p>
+  </article>
+</section>

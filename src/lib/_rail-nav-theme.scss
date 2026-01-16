@@ -1,0 +1,71 @@
+@use 'sass:map';
+
+/// Available tokens for rail-nav theming
+///
+/// @param {Map} $tokens - Map of tokens to override
+///   - backdrop-color: Background color for the backdrop overlay
+///   - surface-color: Background color for the rail
+///   - surface-container-high: Background color for hover states
+///   - on-surface: Text color for primary content
+///   - on-surface-variant: Text color for secondary content
+///   - secondary-container: Background color for active items
+///   - on-secondary-container: Text color for active items
+///   - primary: Focus ring color
+///   - error: Badge background color
+///   - on-error: Badge text color
+///
+/// @example
+///   @use '@softwarity/rail-nav' as rail-nav;
+///
+///   :root {
+///     @include rail-nav.overrides((
+///       backdrop-color: rgba(0, 0, 0, 0.5),
+///       primary: #6200ea,
+///     ));
+///   }
+@mixin overrides($tokens: ()) {
+  $defaults: (
+    backdrop-color: null,
+    surface-color: null,
+    surface-container-high: null,
+    on-surface: null,
+    on-surface-variant: null,
+    secondary-container: null,
+    on-secondary-container: null,
+    primary: null,
+    error: null,
+    on-error: null
+  );
+  $merged: map.merge($defaults, $tokens);
+
+  @if map.get($merged, backdrop-color) {
+    --rail-nav-backdrop-color: #{map.get($merged, backdrop-color)};
+  }
+  @if map.get($merged, surface-color) {
+    --rail-nav-surface-color: #{map.get($merged, surface-color)};
+  }
+  @if map.get($merged, surface-container-high) {
+    --rail-nav-surface-container-high: #{map.get($merged, surface-container-high)};
+  }
+  @if map.get($merged, on-surface) {
+    --rail-nav-on-surface: #{map.get($merged, on-surface)};
+  }
+  @if map.get($merged, on-surface-variant) {
+    --rail-nav-on-surface-variant: #{map.get($merged, on-surface-variant)};
+  }
+  @if map.get($merged, secondary-container) {
+    --rail-nav-secondary-container: #{map.get($merged, secondary-container)};
+  }
+  @if map.get($merged, on-secondary-container) {
+    --rail-nav-on-secondary-container: #{map.get($merged, on-secondary-container)};
+  }
+  @if map.get($merged, primary) {
+    --rail-nav-primary: #{map.get($merged, primary)};
+  }
+  @if map.get($merged, error) {
+    --rail-nav-error: #{map.get($merged, error)};
+  }
+  @if map.get($merged, on-error) {
+    --rail-nav-on-error: #{map.get($merged, on-error)};
+  }
+}

@@ -1,0 +1,66 @@
+<section class="playground">
+  <h2>Playground</h2>
+
+  <!-- Interactive index.html fragment with color scheme toggle -->
+  <pre class="fake-prism html-fragment"><code><span class="token comment">&lt;!-- index.html --&gt;</span>
+<span class="token tag">&lt;body</span> <span class="token attr-name">class</span>=<span class="token attr-value">"{{ isDarkMode() ? 'dark-mode' : '' }}"</span><span class="token tag">&gt;</span>...<span class="token tag">&lt;/body&gt;</span></code><button class="color-scheme-toggle" (click)="toggleColorScheme()" [title]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">@if (isDarkMode()) {<mat-icon>light_mode</mat-icon>} @else {<mat-icon>dark_mode</mat-icon>}</button></pre>
+
+  <!-- Interactive HTML Code -->
+  <pre class="fake-prism html-fragment"><code><span class="token tag">&lt;rail-nav-container</span> <span class="token attr-name">[showBackdrop]</span>=<span class="token attr-value">"</span><label class="inline-bool"><input type="checkbox" [checked]="hasBackdrop()" (change)="toggleBackdrop()"><span class="token keyword">{{ hasBackdrop() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span>
+  <span class="token tag">&lt;rail-nav</span> <span class="token attr-name">[railPosition]</span>=<span class="token attr-value">"'</span><label class="inline-bool"><input type="checkbox" [checked]="position() === 'end'" (change)="togglePosition()"><span class="token keyword">{{ position() }}</span></label><span class="token attr-value">'"</span> <span class="token attr-name">title</span>=<span class="token attr-value">"Rail Nav"</span> <span class="token attr-name">subtitle</span>=<span class="token attr-value">"v1.0.0"</span><span class="token tag">&gt;</span>
+    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Home"</span> <span class="token attr-name">[badge]</span>=<span class="token attr-value">"</span><label class="inline-number"><input type="number" min="0" max="99" [value]="homeBadge()" (input)="homeBadge.set($any($event.target).valueAsNumber || 0)"><span class="token keyword">{{ homeBadge() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>home<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
+    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Favorites"</span> <span class="token attr-name">[badge]</span>=<span class="token attr-value">"</span><label class="inline-bool"><input type="checkbox" [checked]="favoritesDot()" (change)="favoritesDot.set(!favoritesDot())"><span class="token keyword">{{ favoritesDot() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>favorite<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
+    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Settings"</span> <span class="token attr-name">routerLink</span>=<span class="token attr-value">"/settings"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>settings<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
+  <span class="token tag">&lt;/rail-nav&gt;</span>
+  <span class="token tag">&lt;rail-nav-content&gt;</span>...<span class="token tag">&lt;/rail-nav-content&gt;</span>
+<span class="token tag">&lt;/rail-nav-container&gt;</span></code></pre>
+
+  <!-- Live Preview -->
+  <div class="preview-wrapper">
+    <div class="preview-area rail-preview">
+      <rail-nav-container [showBackdrop]="hasBackdrop()">
+        <rail-nav #railnav [railPosition]="position()" title="Rail Nav" subtitle="v1.0.0">
+          <!-- Navigation items -->
+          <nav class="rail-items">
+            @for (item of navItems; track item.id) {
+              <rail-nav-item
+                [label]="item.label"
+                [active]="activeItem() === item.id"
+                [badge]="item.id === 'home' ? (homeBadge() || undefined) : item.id === 'favorites' ? (favoritesDot() || undefined) : undefined"
+                (itemClick)="selectItem(item.id)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </rail-nav-item>
+            }
+          </nav>
+        </rail-nav>
+
+        <rail-nav-content [railPosition]="position()">
+          <div class="demo-content">
+            <p>Active: <code>{{ activeItem() }}</code></p>
+            <p>Click the burger to expand/collapse.</p>
+          </div>
+        </rail-nav-content>
+      </rail-nav-container>
+    </div>
+  </div>
+
+  <!-- Usage SCSS Code -->
+  <pre class="fake-prism"><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;angular/material'</span> <span class="token keyword">as</span> mat<span class="token punctuation">;</span>
+
+<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">&#64;include</span> mat.<span class="token function">theme</span><span class="token punctuation">((</span><span class="token property">color</span><span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token property">primary</span><span class="token punctuation">:</span> mat.<span class="token variable">$violet-palette</span><span class="token punctuation">)</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light<span class="token punctuation">;</span>
+  <span class="token selector">&amp; body.dark-mode</span> <span class="token punctuation">&#123;</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+  <!-- SCSS Customization -->
+  <pre class="fake-prism"><code><span class="token comment">/* SCSS Theme Override */</span>
+<span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+
+<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
+    <span class="token property">backdrop-color</span><span class="token punctuation">:</span> rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.5)<span class="token punctuation">,</span>
+    <span class="token property">primary</span><span class="token punctuation">:</span> #6200ea<span class="token punctuation">,</span>
+  <span class="token punctuation">))</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+</section>
