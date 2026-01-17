@@ -100,13 +100,11 @@ The main navigation rail component. Extends `MatSidenav`.
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `collapsedWidth` | `number` | `72` | Width in pixels when collapsed (icon-only mode) |
-| `expandedWidth` | `number \| 'auto'` | `'auto'` | Width when expanded. Use `'auto'` for content-based width |
 | `position` | `'start' \| 'end'` | `'start'` | Position of the rail (left or right) |
 | `title` | `string` | - | Title displayed next to burger when expanded |
 | `subtitle` | `string` | - | Subtitle displayed below title when expanded |
-| `headerHeight` | `number` | `56` | Header height in pixels (to match toolbar) |
 | `hideDefaultHeader` | `boolean` | `false` | Hide the default header to provide custom content |
+| `autoCollapse` | `boolean` | `true` | Auto-collapse the rail when an item is clicked |
 
 | Property/Method | Type | Description |
 |-----------------|------|-------------|
@@ -127,12 +125,7 @@ Container component. Extends `MatSidenavContainer`.
 
 Content area component. Extends `MatSidenavContent`.
 
-| Input | Type | Default | Description |
-|-------|------|---------|-------------|
-| `collapsedWidth` | `number` | `auto` | Width of collapsed rail. Auto-detected from sibling `rail-nav` if not set |
-| `position` | `'start' \| 'end'` | `auto` | Position of rail. Auto-detected from sibling `rail-nav` if not set |
-
-**Note:** Both inputs are optional. When placed inside a `rail-nav-container` alongside a `rail-nav`, the component automatically reads `collapsedWidth` and `position` from the sibling rail.
+**Note:** When placed inside a `rail-nav-container` alongside a `rail-nav`, the component automatically detects the rail position and applies the correct margin using the `--rail-nav-collapsed-width` CSS variable.
 
 ### RailnavItemComponent
 
@@ -167,30 +160,49 @@ Use the SCSS mixin to customize colors following the Angular Material pattern:
 
 ### Available Tokens
 
-| Token | Description |
-|-------|-------------|
-| `backdrop-color` | Background color for the backdrop overlay |
-| `surface-color` | Background color for the rail |
-| `surface-container-high` | Background color for hover states |
-| `on-surface` | Text color for primary content |
-| `on-surface-variant` | Text color for secondary content |
-| `secondary-container` | Background color for active items |
-| `on-secondary-container` | Text color for active items |
-| `primary` | Focus ring color |
-| `error` | Badge background color |
-| `on-error` | Badge text color |
+| Token | Default | Description |
+|-------|---------|-------------|
+| `collapsed-width` | `72px` | Width of the rail when collapsed |
+| `expanded-width` | `fit-content` | Width of the rail when expanded |
+| `header-height` | `56px` | Height of the header area |
+| `backdrop-color` | - | Background color for the backdrop overlay |
+| `surface-color` | - | Background color for the rail |
+| `surface-container-high` | - | Background color for hover states |
+| `on-surface` | - | Text color for primary content |
+| `on-surface-variant` | - | Text color for secondary content |
+| `secondary-container` | - | Background color for active items |
+| `on-secondary-container` | - | Text color for active items |
+| `primary` | - | Focus ring color |
+| `error` | - | Badge background color |
+| `on-error` | - | Badge text color |
 
 ## CSS Custom Properties
 
-You can also use CSS custom properties directly:
+You can also use CSS custom properties directly.
+
+### Size Properties
 
 ```css
 :root {
-  --rail-nav-backdrop-color: rgba(0, 0, 0, 0.5);
+  --rail-nav-collapsed-width: 72px;
+  --rail-nav-expanded-width: fit-content;
+  --rail-nav-header-height: 56px;
+}
+```
+
+### Color Properties
+
+Color properties support the CSS `light-dark()` function for automatic light/dark theme adaptation:
+
+```css
+:root {
+  /* Static colors (single theme) */
   --rail-nav-surface-color: #ffffff;
-  --rail-nav-on-surface: #1c1b1f;
   --rail-nav-primary: #6750a4;
-  --rail-nav-error: #b3261e;
+
+  /* Or use light-dark() for automatic theme adaptation */
+  --rail-nav-surface-color: light-dark(#ffffff, #1e1e1e);
+  --rail-nav-primary: light-dark(#6750a4, #d0bcff);
 }
 ```
 
@@ -198,7 +210,7 @@ The component uses Material Design 3 system tokens (`--mat-sys-*`) as fallbacks.
 
 ## Light/Dark Theme Support
 
-Use the CSS `light-dark()` function to define colors that automatically adapt to the user's color scheme:
+Use the CSS `light-dark()` function to define colors that automatically adapt to the user's color scheme. The first value is for light mode, the second for dark mode.
 
 ### With SCSS mixin
 
