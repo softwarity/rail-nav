@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.0.2
+
+---
+
 ## 1.0.1
 
 - **RailnavItemComponent**: New navigation item component with MD3 pill animation
