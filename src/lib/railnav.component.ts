@@ -74,7 +74,7 @@ import { NgTemplateOutlet } from '@angular/common';
       display: flex;
       align-items: center;
       gap: 12px;
-      height: var(--rail-nav-header-height, 56px);
+      height: var(--rail-nav-header-height, 64px);
       padding: 16px 16px 16px 24px;
       box-sizing: border-box;
       cursor: pointer;

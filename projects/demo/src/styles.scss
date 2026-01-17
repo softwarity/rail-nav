@@ -51,9 +51,9 @@ html {
 // Form field override for toolbar search
 mat-toolbar mat-form-field {
   @include mat.form-field-overrides((
-    container-height: 36px,
-    container-vertical-padding: 6px,
-    outlined-outline-width: 1px,
+    container-height: 44px,
+    container-vertical-padding: 10px,
+    // outlined-outline-width: 1px,
   ));
 }
 
@@ -132,9 +132,3 @@ h2 {
   color: var(--text-primary);
 }
 
-// Override Material sidenav border
-.mat-drawer,
-.mat-sidenav,
-rail-nav {
-  border: none !important;
-}
