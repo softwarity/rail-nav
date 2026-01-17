@@ -73,6 +73,21 @@
   gap: 0;
 }
 
+mat-toolbar {
+  height: var(--rail-nav-header-height, 56px);
+  background: light-dark(#e8e8e8, #2a2a2a);
+  padding: 0 16px;
+  gap: 8px;
+
+  mat-form-field {
+    width: 250px;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+}
+
 .demo-content {
   padding: 24px;
 

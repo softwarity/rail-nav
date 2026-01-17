@@ -6,6 +6,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const PALETTES = [
   'red', 'green', 'blue', 'yellow', 'cyan', 'magenta',
@@ -38,6 +40,8 @@ interface SizeOverride {
     MatRippleModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatInputModule,
+    MatToolbarModule,
     RailnavComponent,
     RailnavContainerComponent,
     RailnavContentComponent,
@@ -52,12 +56,14 @@ export class PlaygroundComponent {
   protected isDarkMode = signal(document.body.classList.contains('dark-mode'));
   protected hasBackdrop = signal(true);
   protected position = signal<'start' | 'end'>('start');
+  protected autoCollapse = signal(true);
   protected activeItem = signal('home');
   protected homeBadge = signal(3);
   protected favoritesDot = signal(true);
 
   // Size overrides
   protected collapsedWidthOverride = signal<SizeOverride>({ enabled: false, value: 72 });
+  protected expandedWidthOverride = signal<SizeOverride>({ enabled: false, value: 280 });
   protected headerHeightOverride = signal<SizeOverride>({ enabled: false, value: 56 });
 
   // Color overrides
@@ -83,6 +89,7 @@ export class PlaygroundComponent {
       if (!preview) return;
 
       const collapsedWidth = this.collapsedWidthOverride();
+      const expandedWidth = this.expandedWidthOverride();
       const headerHeight = this.headerHeightOverride();
       const surface = this.surfaceOverride();
       const backdrop = this.backdropOverride();
@@ -93,6 +100,12 @@ export class PlaygroundComponent {
         preview.style.setProperty('--rail-nav-collapsed-width', `${collapsedWidth.value}px`);
       } else {
         preview.style.removeProperty('--rail-nav-collapsed-width');
+      }
+
+      if (expandedWidth.enabled) {
+        preview.style.setProperty('--rail-nav-expanded-width', `${expandedWidth.value}px`);
+      } else {
+        preview.style.removeProperty('--rail-nav-expanded-width');
       }
 
       if (headerHeight.enabled) {
@@ -140,6 +153,10 @@ export class PlaygroundComponent {
     this.position.update(p => p === 'start' ? 'end' : 'start');
   }
 
+  toggleAutoCollapse(): void {
+    this.autoCollapse.update(a => !a);
+  }
+
   selectItem(id: string): void {
     this.activeItem.set(id);
   }
@@ -165,18 +182,20 @@ export class PlaygroundComponent {
     signalMap[type].update(o => ({ ...o, [mode]: input.value }));
   }
 
-  toggleSizeOverride(type: 'collapsedWidth' | 'headerHeight'): void {
+  toggleSizeOverride(type: 'collapsedWidth' | 'expandedWidth' | 'headerHeight'): void {
     const signalMap = {
       collapsedWidth: this.collapsedWidthOverride,
+      expandedWidth: this.expandedWidthOverride,
       headerHeight: this.headerHeightOverride
     };
     signalMap[type].update(o => ({ ...o, enabled: !o.enabled }));
   }
 
-  updateSizeOverride(type: 'collapsedWidth' | 'headerHeight', event: Event): void {
+  updateSizeOverride(type: 'collapsedWidth' | 'expandedWidth' | 'headerHeight', event: Event): void {
     const input = event.target as HTMLInputElement;
     const signalMap = {
       collapsedWidth: this.collapsedWidthOverride,
+      expandedWidth: this.expandedWidthOverride,
       headerHeight: this.headerHeightOverride
     };
     signalMap[type].update(o => ({ ...o, value: input.valueAsNumber || 0 }));

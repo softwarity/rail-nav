@@ -4,6 +4,7 @@
 ///
 /// @param {Map} $tokens - Map of tokens to override
 ///   - collapsed-width: Width of the rail when collapsed (default: 72px)
+///   - expanded-width: Width of the rail when expanded (default: fit-content)
 ///   - header-height: Height of the header area (default: 56px)
 ///   - backdrop-color: Background color for the backdrop overlay
 ///   - surface-color: Background color for the rail
@@ -22,6 +23,7 @@
 ///   :root {
 ///     @include rail-nav.overrides((
 ///       collapsed-width: 80px,
+///       expanded-width: 280px,
 ///       header-height: 64px,
 ///       backdrop-color: rgba(0, 0, 0, 0.5),
 ///       primary: #6200ea,
@@ -30,6 +32,7 @@
 @mixin overrides($tokens: ()) {
   $defaults: (
     collapsed-width: null,
+    expanded-width: null,
     header-height: null,
     backdrop-color: null,
     surface-color: null,
@@ -46,6 +49,9 @@
 
   @if map.get($merged, collapsed-width) {
     --rail-nav-collapsed-width: #{map.get($merged, collapsed-width)};
+  }
+  @if map.get($merged, expanded-width) {
+    --rail-nav-expanded-width: #{map.get($merged, expanded-width)};
   }
   @if map.get($merged, header-height) {
     --rail-nav-header-height: #{map.get($merged, header-height)};

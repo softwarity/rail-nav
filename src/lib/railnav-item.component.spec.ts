@@ -6,7 +6,7 @@ import { RailnavItemComponent } from './railnav-item.component';
 
 @Component({
   template: `
-    <rail-nav [position]="position()">
+    <rail-nav [position]="position()" [autoCollapse]="autoCollapse()">
       <rail-nav-item
         [label]="label()"
         [badge]="badge()"
@@ -21,6 +21,7 @@ import { RailnavItemComponent } from './railnav-item.component';
 })
 class TestHostComponent {
   position = signal<'start' | 'end'>('start');
+  autoCollapse = signal(true);
   label = signal('Test Label');
   badge = signal<string | number | boolean | undefined>(undefined);
   active = signal(false);
@@ -285,6 +286,19 @@ describe('RailnavItemComponent', () => {
       await fixture.whenStable();
 
       expect(component.railnav().expanded()).toBe(false);
+    });
+
+    it('should NOT collapse rail when autoCollapse is false', async () => {
+      component.autoCollapse.set(false);
+      component.railnav().expand();
+      await fixture.whenStable();
+      expect(component.railnav().expanded()).toBe(true);
+
+      const button = fixture.nativeElement.querySelector('button.rail-item');
+      button.click();
+      await fixture.whenStable();
+
+      expect(component.railnav().expanded()).toBe(true);
     });
 
     it('should emit itemClick multiple times on multiple clicks', async () => {

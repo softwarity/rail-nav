@@ -49,12 +49,6 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>expandedWidth</code></td>
-            <td><code>number | 'auto'</code></td>
-            <td><code>'auto'</code></td>
-            <td>Width when expanded. Use <code>'auto'</code> for content-based width or a number in pixels</td>
-          </tr>
-          <tr>
             <td><code>position</code></td>
             <td><code>'start' | 'end'</code></td>
             <td><code>'start'</code></td>
@@ -77,6 +71,12 @@
             <td><code>boolean</code></td>
             <td><code>false</code></td>
             <td>Hide the default header to provide custom content</td>
+          </tr>
+          <tr>
+            <td><code>autoCollapse</code></td>
+            <td><code>boolean</code></td>
+            <td><code>true</code></td>
+            <td>Auto-collapse the rail when an item is clicked</td>
           </tr>
         </tbody>
       </table>
@@ -294,6 +294,7 @@
         </thead>
         <tbody>
           <tr><td><code>collapsed-width</code></td><td><code>72px</code></td><td>Width of the rail when collapsed</td></tr>
+          <tr><td><code>expanded-width</code></td><td><code>fit-content</code></td><td>Width of the rail when expanded</td></tr>
           <tr><td><code>header-height</code></td><td><code>56px</code></td><td>Height of the header area</td></tr>
           <tr><td><code>backdrop-color</code></td><td>—</td><td>Background color for the backdrop overlay</td></tr>
           <tr><td><code>surface-color</code></td><td>—</td><td>Background color for the rail</td></tr>
@@ -316,6 +317,7 @@
     <p>You can also use CSS custom properties directly:</p>
     <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
   <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 72px<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-expanded-width</span><span class="token punctuation">:</span> fit-content<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-header-height</span><span class="token punctuation">:</span> 56px<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> rgba(0, 0, 0, 0.5)<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>

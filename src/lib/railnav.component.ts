@@ -1,4 +1,4 @@
-import { Component, signal, effect, input, computed } from '@angular/core';
+import { Component, signal, effect, input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatRippleModule } from '@angular/material/core';
 
@@ -62,6 +62,7 @@ import { MatRippleModule } from '@angular/material/core';
     }
 
     :host(.expanded) {
+      width: var(--rail-nav-expanded-width, fit-content);
       box-shadow: 4px 0 8px rgba(0,0,0,.2);
     }
 
@@ -191,14 +192,10 @@ import { MatRippleModule } from '@angular/material/core';
   host: {
     'class': 'mat-drawer mat-sidenav',
     '[class.expanded]': 'expanded()',
-    '[class.position-end]': 'railPosition() === "end"',
-    '[style.width]': 'expanded() ? expandedWidthStyle() : null'
+    '[class.position-end]': 'railPosition() === "end"'
   }
 })
 export class RailnavComponent extends MatSidenav {
-  /** Width when expanded (with labels). Use 'auto' for content-based width, or a number in pixels */
-  readonly expandedWidth = input<number | 'auto'>('auto');
-
   /** Position: 'start' (left) or 'end' (right) - aliased to avoid conflict with MatSidenav.position */
   readonly railPosition = input<'start' | 'end'>('start', { alias: 'position' });
 
@@ -211,14 +208,11 @@ export class RailnavComponent extends MatSidenav {
   /** Subtitle displayed when expanded */
   readonly subtitle = input<string>();
 
+  /** Whether to auto-collapse when an item is clicked */
+  readonly autoCollapse = input(true);
+
   /** Whether the rail is expanded to show labels */
   readonly expanded = signal(false);
-
-  /** Computed width for the host element when expanded */
-  protected readonly expandedWidthStyle = computed(() => {
-    const width = this.expandedWidth();
-    return width === 'auto' ? 'fit-content' : `${width}px`;
-  });
 
   constructor() {
     super();

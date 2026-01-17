@@ -48,6 +48,15 @@ html {
   }
 }
 
+// Form field override for toolbar search
+mat-toolbar mat-form-field {
+  @include mat.form-field-overrides((
+    container-height: 36px,
+    container-vertical-padding: 6px,
+    outlined-outline-width: 1px,
+  ));
+}
+
 :root {
   --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   --bg-primary: #161b22;

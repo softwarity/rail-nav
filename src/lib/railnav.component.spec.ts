@@ -23,10 +23,6 @@ describe('RailnavComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should have default expanded width of auto', () => {
-      expect(component.expandedWidth()).toBe('auto');
-    });
-
     it('should have default rail position of start', () => {
       expect(component.railPosition()).toBe('start');
     });
@@ -98,13 +94,6 @@ describe('RailnavComponent', () => {
       component.collapse();
       await fixture.whenStable();
       expect(component.mode).toBe('side');
-    });
-  });
-
-  describe('expanded width style', () => {
-    it('should return fit-content when expanded with auto width', () => {
-      component.expand();
-      expect(component['expandedWidthStyle']()).toBe('fit-content');
     });
   });
 
@@ -180,7 +169,6 @@ describe('RailnavComponent', () => {
 @Component({
   template: `
     <rail-nav
-      [expandedWidth]="expandedWidth()"
       [position]="position()"
       [title]="title()"
       [subtitle]="subtitle()"
@@ -190,7 +178,6 @@ describe('RailnavComponent', () => {
   imports: [RailnavComponent]
 })
 class TestHostComponent {
-  expandedWidth = signal<number | 'auto'>(240);
   position = signal<'start' | 'end'>('start');
   title = signal('Test Title');
   subtitle = signal('Test Subtitle');
@@ -215,10 +202,6 @@ describe('RailnavComponent with inputs', () => {
     await fixture.whenStable();
   });
 
-  it('should accept custom expanded width', () => {
-    expect(component.railnav().expandedWidth()).toBe(240);
-  });
-
   it('should accept custom rail position', async () => {
     component.position.set('end');
     await fixture.whenStable();
@@ -231,13 +214,6 @@ describe('RailnavComponent with inputs', () => {
 
   it('should accept custom subtitle', () => {
     expect(component.railnav().subtitle()).toBe('Test Subtitle');
-  });
-
-  describe('with numeric expanded width', () => {
-    it('should return numeric width in px when expanded', () => {
-      component.railnav().expand();
-      expect(component.railnav()['expandedWidthStyle']()).toBe('240px');
-    });
   });
 
   describe('with title and subtitle', () => {

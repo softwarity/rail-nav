@@ -299,14 +299,18 @@ export class RailnavItemComponent {
   /** Position of the rail (start or end) */
   protected position = computed(() => this.railnav.railPosition());
 
-  /** Handle item click - emit event and collapse rail */
+  /** Handle item click - emit event and optionally collapse rail */
   protected onItemClick(): void {
     this.itemClick.emit();
-    this.railnav.collapse();
+    if (this.railnav.autoCollapse()) {
+      this.railnav.collapse();
+    }
   }
 
-  /** Handle router link click - collapse rail */
+  /** Handle router link click - optionally collapse rail */
   protected onRouterLinkClick(): void {
-    this.railnav.collapse();
+    if (this.railnav.autoCollapse()) {
+      this.railnav.collapse();
+    }
   }
 }
