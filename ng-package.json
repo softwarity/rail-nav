@@ -6,11 +6,6 @@
   },
   "assets": [
     {
-      "input": "src",
-      "glob": "_index.scss",
-      "output": "."
-    },
-    {
       "input": "src/lib",
       "glob": "_rail-nav-theme.scss",
       "output": "."

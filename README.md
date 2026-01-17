@@ -147,7 +147,7 @@ Navigation item with MD3 pill animation.
 Use the SCSS mixin to customize colors following the Angular Material pattern:
 
 ```scss
-@use '@softwarity/rail-nav' as rail-nav;
+@use '@softwarity/rail-nav/rail-nav-theme' as rail-nav;
 
 :root {
   @include rail-nav.overrides((
@@ -215,7 +215,7 @@ Use the CSS `light-dark()` function to define colors that automatically adapt to
 ### With SCSS mixin
 
 ```scss
-@use '@softwarity/rail-nav' as rail-nav;
+@use '@softwarity/rail-nav/rail-nav-theme' as rail-nav;
 
 :root {
   @include rail-nav.overrides((
