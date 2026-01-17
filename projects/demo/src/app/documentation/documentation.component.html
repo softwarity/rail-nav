@@ -49,19 +49,13 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>collapsedWidth</code></td>
-            <td><code>number</code></td>
-            <td><code>72</code></td>
-            <td>Width in pixels when collapsed (icon-only mode)</td>
-          </tr>
-          <tr>
             <td><code>expandedWidth</code></td>
             <td><code>number | 'auto'</code></td>
             <td><code>'auto'</code></td>
             <td>Width when expanded. Use <code>'auto'</code> for content-based width or a number in pixels</td>
           </tr>
           <tr>
-            <td><code>railPosition</code></td>
+            <td><code>position</code></td>
             <td><code>'start' | 'end'</code></td>
             <td><code>'start'</code></td>
             <td>Position of the rail (left or right). Icon flips for 'end'</td>
@@ -77,12 +71,6 @@
             <td><code>string</code></td>
             <td><code>undefined</code></td>
             <td>Subtitle displayed below title when expanded</td>
-          </tr>
-          <tr>
-            <td><code>headerHeight</code></td>
-            <td><code>number</code></td>
-            <td><code>56</code></td>
-            <td>Header height in pixels (to match toolbar height)</td>
           </tr>
           <tr>
             <td><code>hideDefaultHeader</code></td>
@@ -172,20 +160,15 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>collapsedWidth</code></td>
-            <td><code>number</code></td>
-            <td><code>72</code></td>
-            <td>Must match RailnavComponent's collapsedWidth</td>
-          </tr>
-          <tr>
-            <td><code>railPosition</code></td>
+            <td><code>position</code></td>
             <td><code>'start' | 'end'</code></td>
-            <td><code>'start'</code></td>
-            <td>Must match RailnavComponent's position</td>
+            <td><code>auto</code></td>
+            <td>Position of rail. Auto-detected from sibling <code>rail-nav</code> if not set</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <p><strong>Note:</strong> Position is optional. When placed inside a <code>rail-nav-container</code> alongside a <code>rail-nav</code>, the component automatically reads <code>position</code> from the sibling rail.</p>
   </article>
 
   <!-- API - RailnavItemComponent -->
@@ -305,20 +288,23 @@
         <thead>
           <tr>
             <th>Token</th>
+            <th>Default</th>
             <th>Description</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td><code>backdrop-color</code></td><td>Background color for the backdrop overlay</td></tr>
-          <tr><td><code>surface-color</code></td><td>Background color for the rail</td></tr>
-          <tr><td><code>surface-container-high</code></td><td>Background color for hover states</td></tr>
-          <tr><td><code>on-surface</code></td><td>Text color for primary content (title, icons)</td></tr>
-          <tr><td><code>on-surface-variant</code></td><td>Text color for secondary content (subtitle, labels)</td></tr>
-          <tr><td><code>secondary-container</code></td><td>Background color for active items</td></tr>
-          <tr><td><code>on-secondary-container</code></td><td>Text color for active items</td></tr>
-          <tr><td><code>primary</code></td><td>Focus ring color</td></tr>
-          <tr><td><code>error</code></td><td>Badge background color</td></tr>
-          <tr><td><code>on-error</code></td><td>Badge text color</td></tr>
+          <tr><td><code>collapsed-width</code></td><td><code>72px</code></td><td>Width of the rail when collapsed</td></tr>
+          <tr><td><code>header-height</code></td><td><code>56px</code></td><td>Height of the header area</td></tr>
+          <tr><td><code>backdrop-color</code></td><td>—</td><td>Background color for the backdrop overlay</td></tr>
+          <tr><td><code>surface-color</code></td><td>—</td><td>Background color for the rail</td></tr>
+          <tr><td><code>surface-container-high</code></td><td>—</td><td>Background color for hover states</td></tr>
+          <tr><td><code>on-surface</code></td><td>—</td><td>Text color for primary content (title, icons)</td></tr>
+          <tr><td><code>on-surface-variant</code></td><td>—</td><td>Text color for secondary content (subtitle, labels)</td></tr>
+          <tr><td><code>secondary-container</code></td><td>—</td><td>Background color for active items</td></tr>
+          <tr><td><code>on-secondary-container</code></td><td>—</td><td>Text color for active items</td></tr>
+          <tr><td><code>primary</code></td><td>—</td><td>Focus ring color</td></tr>
+          <tr><td><code>error</code></td><td>—</td><td>Badge background color</td></tr>
+          <tr><td><code>on-error</code></td><td>—</td><td>Badge text color</td></tr>
         </tbody>
       </table>
     </div>
@@ -329,6 +315,8 @@
     <h3>CSS Custom Properties</h3>
     <p>You can also use CSS custom properties directly:</p>
     <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 72px<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-header-height</span><span class="token punctuation">:</span> 56px<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> rgba(0, 0, 0, 0.5)<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
   <span class="token property">--rail-nav-on-surface</span><span class="token punctuation">:</span> #1c1b1f<span class="token punctuation">;</span>
@@ -340,5 +328,68 @@
   <span class="token property">--rail-nav-on-error</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
 <span class="token punctuation">&#125;</span></code></pre>
     <p>By default, the component uses Material Design 3 system tokens (<code>--mat-sys-*</code>) as fallbacks.</p>
+
+    <div class="info-box">
+      <h4>Why CSS variables for dimensions?</h4>
+      <p>Dimensions like <code>collapsed-width</code> and <code>header-height</code> are defined via CSS variables (instead of Angular inputs) for two key benefits:</p>
+      <ul>
+        <li><strong>Global configuration</strong> — Define values once in <code>:root</code> and apply to all instances</li>
+        <li><strong>Responsive design</strong> — Use media queries to adapt dimensions to different screen sizes</li>
+      </ul>
+      <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 72px<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token atrule">&#64;media</span> (max-width: 600px) <span class="token punctuation">&#123;</span>
+  <span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 56px<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+    </div>
+  </article>
+
+  <!-- Light/Dark Theme Support -->
+  <article class="doc-section">
+    <h3>Light/Dark Theme Support</h3>
+    <p>Use the CSS <code>light-dark()</code> function to define colors that automatically adapt to the user's color scheme preference:</p>
+
+    <h4>With SCSS mixin</h4>
+    <pre><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+
+<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
+    <span class="token property">backdrop-color</span><span class="token punctuation">:</span> light-dark(rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.4)<span class="token punctuation">,</span> rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.6))<span class="token punctuation">,</span>
+    <span class="token property">surface-color</span><span class="token punctuation">:</span> light-dark(#ffffff<span class="token punctuation">,</span> #1e1e1e)<span class="token punctuation">,</span>
+    <span class="token property">on-surface</span><span class="token punctuation">:</span> light-dark(#1c1b1f<span class="token punctuation">,</span> #e6e1e5)<span class="token punctuation">,</span>
+    <span class="token property">primary</span><span class="token punctuation">:</span> light-dark(#6750a4<span class="token punctuation">,</span> #d0bcff)<span class="token punctuation">,</span>
+  <span class="token punctuation">))</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+    <h4>With CSS custom properties</h4>
+    <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6))<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> light-dark(#ffffff, #1e1e1e)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-surface</span><span class="token punctuation">:</span> light-dark(#1c1b1f, #e6e1e5)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-surface-variant</span><span class="token punctuation">:</span> light-dark(#49454f, #cac4d0)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-secondary-container</span><span class="token punctuation">:</span> light-dark(#e8def8, #4a4458)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-secondary-container</span><span class="token punctuation">:</span> light-dark(#1d192b, #e8def8)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-primary</span><span class="token punctuation">:</span> light-dark(#6750a4, #d0bcff)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-error</span><span class="token punctuation">:</span> light-dark(#b3261e, #f2b8b5)<span class="token punctuation">;</span>
+  <span class="token property">--rail-nav-on-error</span><span class="token punctuation">:</span> light-dark(#ffffff, #601410)<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+    <h4>Setting up color-scheme</h4>
+    <p>For <code>light-dark()</code> to work, you need to set the <code>color-scheme</code> property on your document:</p>
+    <pre><code><span class="token comment">/* styles.scss */</span>
+<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light<span class="token punctuation">;</span>
+  <span class="token selector">&amp;.dark-mode</span> <span class="token punctuation">&#123;</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">/* Or use prefers-color-scheme for system preference */</span>
+<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light dark<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+    <p><strong>Note:</strong> If you're using Angular Material with a theme, the <code>color-scheme</code> is typically set automatically based on your theme configuration.</p>
   </article>
 </section>

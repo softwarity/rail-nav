@@ -6,7 +6,7 @@ import { RailnavItemComponent } from './railnav-item.component';
 
 @Component({
   template: `
-    <rail-nav [railPosition]="railPosition()">
+    <rail-nav [position]="position()">
       <rail-nav-item
         [label]="label()"
         [badge]="badge()"
@@ -20,7 +20,7 @@ import { RailnavItemComponent } from './railnav-item.component';
   imports: [RailnavComponent, RailnavItemComponent]
 })
 class TestHostComponent {
-  railPosition = signal<'start' | 'end'>('start');
+  position = signal<'start' | 'end'>('start');
   label = signal('Test Label');
   badge = signal<string | number | boolean | undefined>(undefined);
   active = signal(false);
@@ -109,20 +109,20 @@ describe('RailnavItemComponent', () => {
   describe('position', () => {
     it('should reflect parent position', async () => {
       expect(component.railnavItem()['position']()).toBe('start');
-      component.railPosition.set('end');
+      component.position.set('end');
       await fixture.whenStable();
       expect(component.railnavItem()['position']()).toBe('end');
     });
 
     it('should add position-end class when parent position is end', async () => {
-      component.railPosition.set('end');
+      component.position.set('end');
       await fixture.whenStable();
       const item = fixture.nativeElement.querySelector('.rail-item');
       expect(item.classList.contains('position-end')).toBe(true);
     });
 
     it('should add position-end class to host when position is end', async () => {
-      component.railPosition.set('end');
+      component.position.set('end');
       await fixture.whenStable();
       const host = fixture.nativeElement.querySelector('rail-nav-item');
       expect(host.classList.contains('position-end')).toBe(true);

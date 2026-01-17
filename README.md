@@ -93,7 +93,7 @@ The main navigation rail component. Extends `MatSidenav`.
 |-------|------|---------|-------------|
 | `collapsedWidth` | `number` | `72` | Width in pixels when collapsed (icon-only mode) |
 | `expandedWidth` | `number \| 'auto'` | `'auto'` | Width when expanded. Use `'auto'` for content-based width |
-| `railPosition` | `'start' \| 'end'` | `'start'` | Position of the rail (left or right) |
+| `position` | `'start' \| 'end'` | `'start'` | Position of the rail (left or right) |
 | `title` | `string` | - | Title displayed next to burger when expanded |
 | `subtitle` | `string` | - | Subtitle displayed below title when expanded |
 | `headerHeight` | `number` | `56` | Header height in pixels (to match toolbar) |
@@ -120,8 +120,10 @@ Content area component. Extends `MatSidenavContent`.
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `collapsedWidth` | `number` | `72` | Must match RailnavComponent's collapsedWidth |
-| `railPosition` | `'start' \| 'end'` | `'start'` | Must match RailnavComponent's position |
+| `collapsedWidth` | `number` | `auto` | Width of collapsed rail. Auto-detected from sibling `rail-nav` if not set |
+| `position` | `'start' \| 'end'` | `auto` | Position of rail. Auto-detected from sibling `rail-nav` if not set |
+
+**Note:** Both inputs are optional. When placed inside a `rail-nav-container` alongside a `rail-nav`, the component automatically reads `collapsedWidth` and `position` from the sibling rail.
 
 ### RailnavItemComponent
 
@@ -184,6 +186,57 @@ You can also use CSS custom properties directly:
 ```
 
 The component uses Material Design 3 system tokens (`--mat-sys-*`) as fallbacks.
+
+## Light/Dark Theme Support
+
+Use the CSS `light-dark()` function to define colors that automatically adapt to the user's color scheme:
+
+### With SCSS mixin
+
+```scss
+@use '@softwarity/rail-nav' as rail-nav;
+
+:root {
+  @include rail-nav.overrides((
+    backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+    surface-color: light-dark(#ffffff, #1e1e1e),
+    on-surface: light-dark(#1c1b1f, #e6e1e5),
+    primary: light-dark(#6750a4, #d0bcff),
+  ));
+}
+```
+
+### With CSS custom properties
+
+```css
+:root {
+  --rail-nav-backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  --rail-nav-surface-color: light-dark(#ffffff, #1e1e1e);
+  --rail-nav-on-surface: light-dark(#1c1b1f, #e6e1e5);
+  --rail-nav-on-surface-variant: light-dark(#49454f, #cac4d0);
+  --rail-nav-secondary-container: light-dark(#e8def8, #4a4458);
+  --rail-nav-on-secondary-container: light-dark(#1d192b, #e8def8);
+  --rail-nav-primary: light-dark(#6750a4, #d0bcff);
+  --rail-nav-error: light-dark(#b3261e, #f2b8b5);
+  --rail-nav-on-error: light-dark(#ffffff, #601410);
+}
+```
+
+### Setting up color-scheme
+
+For `light-dark()` to work, set the `color-scheme` property on your document:
+
+```scss
+html {
+  color-scheme: light;
+  &.dark-mode { color-scheme: dark; }
+}
+
+/* Or use system preference */
+html {
+  color-scheme: light dark;
+}
+```
 
 ## Example
 

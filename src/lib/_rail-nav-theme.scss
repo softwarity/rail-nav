@@ -3,6 +3,8 @@
 /// Available tokens for rail-nav theming
 ///
 /// @param {Map} $tokens - Map of tokens to override
+///   - collapsed-width: Width of the rail when collapsed (default: 72px)
+///   - header-height: Height of the header area (default: 56px)
 ///   - backdrop-color: Background color for the backdrop overlay
 ///   - surface-color: Background color for the rail
 ///   - surface-container-high: Background color for hover states
@@ -19,12 +21,16 @@
 ///
 ///   :root {
 ///     @include rail-nav.overrides((
+///       collapsed-width: 80px,
+///       header-height: 64px,
 ///       backdrop-color: rgba(0, 0, 0, 0.5),
 ///       primary: #6200ea,
 ///     ));
 ///   }
 @mixin overrides($tokens: ()) {
   $defaults: (
+    collapsed-width: null,
+    header-height: null,
     backdrop-color: null,
     surface-color: null,
     surface-container-high: null,
@@ -38,6 +44,12 @@
   );
   $merged: map.merge($defaults, $tokens);
 
+  @if map.get($merged, collapsed-width) {
+    --rail-nav-collapsed-width: #{map.get($merged, collapsed-width)};
+  }
+  @if map.get($merged, header-height) {
+    --rail-nav-header-height: #{map.get($merged, header-height)};
+  }
   @if map.get($merged, backdrop-color) {
     --rail-nav-backdrop-color: #{map.get($merged, backdrop-color)};
   }

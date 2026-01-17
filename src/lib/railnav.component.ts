@@ -7,7 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
   imports: [MatRippleModule],
   template: `
     @if (!hideDefaultHeader()) {
-      <div class="rail-header" [class.position-end]="railPosition() === 'end'" matRipple [style.height.px]="headerHeight()" (click)="toggleExpanded()">
+      <div class="rail-header" [class.position-end]="railPosition() === 'end'" matRipple (click)="toggleExpanded()">
         @if (expanded() && (title() || subtitle()) && railPosition() === 'end') {
           <div class="rail-branding position-end">
             @if (title()) {
@@ -50,6 +50,7 @@ import { MatRippleModule } from '@angular/material/core';
       bottom: 0;
       left: 0;
       z-index: 100;
+      width: var(--rail-nav-collapsed-width, 72px);
       border: none !important;
       border-right: none !important;
       border-left: none !important;
@@ -77,6 +78,7 @@ import { MatRippleModule } from '@angular/material/core';
       display: flex;
       align-items: center;
       gap: 12px;
+      height: var(--rail-nav-header-height, 56px);
       padding: 16px 16px 16px 24px;
       box-sizing: border-box;
       cursor: pointer;
@@ -190,24 +192,18 @@ import { MatRippleModule } from '@angular/material/core';
     'class': 'mat-drawer mat-sidenav',
     '[class.expanded]': 'expanded()',
     '[class.position-end]': 'railPosition() === "end"',
-    '[style.width]': 'computedWidth()'
+    '[style.width]': 'expanded() ? expandedWidthStyle() : null'
   }
 })
 export class RailnavComponent extends MatSidenav {
-  /** Width when collapsed (icon-only mode) */
-  readonly collapsedWidth = input(72);
-
   /** Width when expanded (with labels). Use 'auto' for content-based width, or a number in pixels */
   readonly expandedWidth = input<number | 'auto'>('auto');
 
-  /** Position: 'start' (left) or 'end' (right) */
-  readonly railPosition = input<'start' | 'end'>('start');
+  /** Position: 'start' (left) or 'end' (right) - aliased to avoid conflict with MatSidenav.position */
+  readonly railPosition = input<'start' | 'end'>('start', { alias: 'position' });
 
   /** Hide the default header (burger + title/subtitle) */
   readonly hideDefaultHeader = input(false);
-
-  /** Header height in pixels (to match toolbar height) */
-  readonly headerHeight = input(56);
 
   /** Title displayed when expanded */
   readonly title = input<string>();
@@ -218,11 +214,8 @@ export class RailnavComponent extends MatSidenav {
   /** Whether the rail is expanded to show labels */
   readonly expanded = signal(false);
 
-  /** Computed width for the host element */
-  protected readonly computedWidth = computed(() => {
-    if (!this.expanded()) {
-      return `${this.collapsedWidth()}px`;
-    }
+  /** Computed width for the host element when expanded */
+  protected readonly expandedWidthStyle = computed(() => {
     const width = this.expandedWidth();
     return width === 'auto' ? 'fit-content' : `${width}px`;
   });

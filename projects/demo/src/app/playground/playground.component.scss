@@ -160,4 +160,83 @@
       background: rgba(240, 141, 73, 0.2);
     }
   }
+
+  // Inline select for palette picker
+  .inline-select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed #f8c555;
+    color: #f8c555;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+
+    option {
+      background: #1e1e1e;
+      color: #f8c555;
+    }
+
+    &:focus {
+      outline: none;
+      border-bottom-color: #fff;
+    }
+  }
+
+  // Override lines with checkbox and color pickers
+  .override-line {
+    display: inline;
+
+    input[type="checkbox"] {
+      margin-right: 4px;
+      cursor: pointer;
+      accent-color: #7c4dff;
+      vertical-align: middle;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+
+      .token.property,
+      .token.function,
+      .token.string {
+        color: #666;
+      }
+    }
+  }
+
+  // Inline color picker
+  .inline-color {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    input[type="color"] {
+      position: absolute;
+      opacity: 0;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .color-preview {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      vertical-align: middle;
+    }
+
+    .token.string {
+      border-bottom: 1px dashed currentColor;
+    }
+
+    &:hover .token.string {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
 }

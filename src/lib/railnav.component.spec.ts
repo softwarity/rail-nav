@@ -23,20 +23,12 @@ describe('RailnavComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should have default collapsed width of 72', () => {
-      expect(component.collapsedWidth()).toBe(72);
-    });
-
     it('should have default expanded width of auto', () => {
       expect(component.expandedWidth()).toBe('auto');
     });
 
     it('should have default rail position of start', () => {
       expect(component.railPosition()).toBe('start');
-    });
-
-    it('should have default header height of 56', () => {
-      expect(component.headerHeight()).toBe(56);
     });
 
     it('should not hide default header by default', () => {
@@ -109,14 +101,10 @@ describe('RailnavComponent', () => {
     });
   });
 
-  describe('computed width', () => {
-    it('should return collapsed width in px when collapsed', () => {
-      expect(component['computedWidth']()).toBe('72px');
-    });
-
+  describe('expanded width style', () => {
     it('should return fit-content when expanded with auto width', () => {
       component.expand();
-      expect(component['computedWidth']()).toBe('fit-content');
+      expect(component['expandedWidthStyle']()).toBe('fit-content');
     });
   });
 
@@ -192,24 +180,20 @@ describe('RailnavComponent', () => {
 @Component({
   template: `
     <rail-nav
-      [collapsedWidth]="collapsedWidth()"
       [expandedWidth]="expandedWidth()"
-      [railPosition]="railPosition()"
+      [position]="position()"
       [title]="title()"
       [subtitle]="subtitle()"
-      [headerHeight]="headerHeight()"
       [hideDefaultHeader]="hideDefaultHeader()">
     </rail-nav>
   `,
   imports: [RailnavComponent]
 })
 class TestHostComponent {
-  collapsedWidth = signal(80);
   expandedWidth = signal<number | 'auto'>(240);
-  railPosition = signal<'start' | 'end'>('start');
+  position = signal<'start' | 'end'>('start');
   title = signal('Test Title');
   subtitle = signal('Test Subtitle');
-  headerHeight = signal(64);
   hideDefaultHeader = signal(false);
 
   railnav = viewChild.required(RailnavComponent);
@@ -231,22 +215,14 @@ describe('RailnavComponent with inputs', () => {
     await fixture.whenStable();
   });
 
-  it('should accept custom collapsed width', () => {
-    expect(component.railnav().collapsedWidth()).toBe(80);
-  });
-
   it('should accept custom expanded width', () => {
     expect(component.railnav().expandedWidth()).toBe(240);
   });
 
   it('should accept custom rail position', async () => {
-    component.railPosition.set('end');
+    component.position.set('end');
     await fixture.whenStable();
     expect(component.railnav().railPosition()).toBe('end');
-  });
-
-  it('should accept custom header height', () => {
-    expect(component.railnav().headerHeight()).toBe(64);
   });
 
   it('should accept custom title', () => {
@@ -260,11 +236,7 @@ describe('RailnavComponent with inputs', () => {
   describe('with numeric expanded width', () => {
     it('should return numeric width in px when expanded', () => {
       component.railnav().expand();
-      expect(component.railnav()['computedWidth']()).toBe('240px');
-    });
-
-    it('should return collapsed width when collapsed', () => {
-      expect(component.railnav()['computedWidth']()).toBe('80px');
+      expect(component.railnav()['expandedWidthStyle']()).toBe('240px');
     });
   });
 
@@ -300,7 +272,7 @@ describe('RailnavComponent with inputs', () => {
 
   describe('with position end', () => {
     beforeEach(async () => {
-      component.railPosition.set('end');
+      component.position.set('end');
       await fixture.whenStable();
     });
 

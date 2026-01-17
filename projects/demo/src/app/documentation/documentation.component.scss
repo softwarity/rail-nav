@@ -67,3 +67,40 @@
     border-bottom: none;
   }
 }
+
+// Info box
+.info-box {
+  background: var(--mat-sys-surface-container, var(--bg-secondary));
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-blue);
+  border-radius: 4px;
+  padding: 16px;
+  margin: 16px 0;
+
+  h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    font-size: 0.9rem;
+  }
+
+  ul {
+    margin: 0 0 12px 0;
+    padding-left: 20px;
+
+    li {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+  }
+
+  pre {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+}

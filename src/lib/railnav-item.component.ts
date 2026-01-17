@@ -16,7 +16,8 @@ import { RailnavComponent } from './railnav.component';
         [routerLink]="routerLink()"
         routerLinkActive="active"
         (click)="onRouterLinkClick()">
-        <div class="rail-item-pill" matRipple>
+        <div class="rail-item-pill">
+          <div class="rail-item-ripple" matRipple></div>
           <div class="rail-item-icon-wrapper">
             <div class="rail-item-icon">
               <ng-content />
@@ -37,7 +38,8 @@ import { RailnavComponent } from './railnav.component';
         [class.position-end]="position() === 'end'"
         [class.active]="active()"
         (click)="onItemClick()">
-        <div class="rail-item-pill" matRipple>
+        <div class="rail-item-pill">
+          <div class="rail-item-ripple" matRipple></div>
           <div class="rail-item-icon-wrapper">
             <div class="rail-item-icon">
               <ng-content />
@@ -110,6 +112,13 @@ import { RailnavComponent } from './railnav.component';
       transition: background 0.2s ease, width 0.2s ease, height 0.2s ease, margin 0.2s ease;
     }
 
+    .rail-item-ripple {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+    }
+
     .rail-item:hover .rail-item-pill {
       background: var(--rail-nav-surface-container-high, var(--mat-sys-surface-container-high));
     }
@@ -122,7 +131,7 @@ import { RailnavComponent } from './railnav.component';
     /* Expanded pill includes both icon and label */
     .rail-item.expanded .rail-item-pill {
       width: auto;
-      height: 56px;
+      height: 48px;
       border-radius: 9999px;
       padding: 0 16px 0 10px;
       gap: 12px;
@@ -135,6 +144,17 @@ import { RailnavComponent } from './railnav.component';
       flex-direction: row-reverse;
       justify-content: flex-start;
       padding: 0 10px 0 16px;
+    }
+
+    /* First item: reduce space after header and keep icon stable during expand */
+    /* Collapsed: 8px + 16px (half of 32px) = 24px from top */
+    /* Expanded: 0px + 24px (half of 48px) = 24px from top */
+    :host:first-child .rail-item-pill {
+      margin-top: 8px;
+    }
+
+    :host:first-child .rail-item.expanded .rail-item-pill {
+      margin-top: 0;
     }
 
     .rail-item-icon-wrapper {
