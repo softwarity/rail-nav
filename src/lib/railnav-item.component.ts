@@ -54,7 +54,7 @@ import { NgTemplateOutlet } from '@angular/common';
     .rail-item {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       justify-content: flex-start;
       text-decoration: none;
       color: var(--rail-nav-on-surface-variant, var(--mat-sys-on-surface-variant));
@@ -70,7 +70,11 @@ import { NgTemplateOutlet } from '@angular/common';
       width: 100%;
     }
 
-    .rail-item.position-end {
+    .rail-item.expanded {
+      align-items: flex-start;
+    }
+
+    .rail-item.expanded.position-end {
       align-items: flex-end;
     }
 
