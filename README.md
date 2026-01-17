@@ -19,6 +19,15 @@ Material Design 3 Navigation Rail component for Angular. Extends Angular Materia
 
 **[Live Demo](https://softwarity.github.io/rail-nav/)**
 
+<p align="center">
+  <a href="https://softwarity.github.io/rail-nav/">
+    <img src="assets/collapsed.png" alt="Rail Nav Collapsed" height="300">
+  </a>
+  <a href="https://softwarity.github.io/rail-nav/">
+    <img src="assets/expanded.png" alt="Rail Nav Expanded" height="300">
+  </a>
+</p>
+
 ## Features
 
 - **Material Design 3** - Implements the Navigation Rail pattern from MD3
