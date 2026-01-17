@@ -1,4 +1,4 @@
-import { Component, ContentChild, AfterContentInit, input } from '@angular/core';
+import { Component, ContentChild, input } from '@angular/core';
 import { MatSidenavContainer, MatDrawerContainer } from '@angular/material/sidenav';
 import { RailnavComponent } from './railnav.component';
 
@@ -54,13 +54,9 @@ import { RailnavComponent } from './railnav.component';
     { provide: MatDrawerContainer, useExisting: RailnavContainerComponent }
   ]
 })
-export class RailnavContainerComponent extends MatSidenavContainer implements AfterContentInit {
+export class RailnavContainerComponent extends MatSidenavContainer {
   /** Whether to show backdrop when expanded */
   readonly showBackdrop = input(true);
 
   @ContentChild(RailnavComponent) railnav?: RailnavComponent;
-
-  override ngAfterContentInit(): void {
-    super.ngAfterContentInit();
-  }
 }

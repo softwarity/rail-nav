@@ -124,11 +124,8 @@ import { NgTemplateOutlet } from '@angular/common';
     .rail-item.expanded .rail-item-pill {
       width: auto;
       height: 48px;
-      border-radius: 9999px;
       padding: 0 16px 0 10px;
       gap: 12px;
-      justify-content: flex-start;
-      box-sizing: border-box;
       margin-top: 0;
     }
 

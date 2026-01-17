@@ -1,42 +1,37 @@
 import { Component, signal, effect, input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatRippleModule } from '@angular/material/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'rail-nav',
-  imports: [MatRippleModule],
+  imports: [MatRippleModule, NgTemplateOutlet],
   template: `
+    <ng-template #brandingTpl>
+      <div class="rail-branding" [class.position-end]="railPosition() === 'end'">
+        @if (title()) {
+          <span class="rail-title">{{ title() }}</span>
+        }
+        @if (subtitle()) {
+          <span class="rail-subtitle">{{ subtitle() }}</span>
+        }
+      </div>
+    </ng-template>
     @if (!hideDefaultHeader()) {
       <div class="rail-header" [class.position-end]="railPosition() === 'end'" matRipple (click)="toggleExpanded()">
         @if (expanded() && (title() || subtitle()) && railPosition() === 'end') {
-          <div class="rail-branding position-end">
-            @if (title()) {
-              <span class="rail-title">{{ title() }}</span>
-            }
-            @if (subtitle()) {
-              <span class="rail-subtitle">{{ subtitle() }}</span>
-            }
-          </div>
+          <ng-container [ngTemplateOutlet]="brandingTpl" />
         }
         <div class="rail-burger" [class.expanded]="expanded()" [class.position-end]="railPosition() === 'end'">
-          <!-- Menu icon (collapsed state) -->
           <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
             <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
           </svg>
-          <!-- Menu open icon (expanded state) -->
           <svg class="icon-menu-open" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
             <path d="M120-240v-80h520v80H120Zm664-40L584-480l200-200 56 56-144 144 144 144-56 56ZM120-440v-80h400v80H120Zm0-200v-80h520v80H120Z"/>
           </svg>
         </div>
         @if (expanded() && (title() || subtitle()) && railPosition() === 'start') {
-          <div class="rail-branding">
-            @if (title()) {
-              <span class="rail-title">{{ title() }}</span>
-            }
-            @if (subtitle()) {
-              <span class="rail-subtitle">{{ subtitle() }}</span>
-            }
-          </div>
+          <ng-container [ngTemplateOutlet]="brandingTpl" />
         }
       </div>
     }
@@ -52,8 +47,6 @@ import { MatRippleModule } from '@angular/material/core';
       z-index: 100;
       width: var(--rail-nav-collapsed-width, 72px);
       border: none !important;
-      border-right: none !important;
-      border-left: none !important;
       outline: none !important;
       box-shadow: none;
       background: var(--rail-nav-surface-color, var(--mat-sys-surface));
@@ -158,7 +151,6 @@ import { MatRippleModule } from '@angular/material/core';
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 0;
       min-width: 0;
       overflow: hidden;
       text-align: right;
