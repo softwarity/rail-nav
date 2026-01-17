@@ -4,6 +4,59 @@
 
 .playground {
   margin-bottom: 32px;
+
+  interactive-code {
+    display: block;
+    margin: 1rem 0;
+  }
+}
+
+// Code header with toggle button
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #252526;
+  border: 1px solid #30363d;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 8px 16px;
+  margin-top: 1rem;
+
+  span {
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.8rem;
+    color: #8b949e;
+  }
+}
+
+.color-scheme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8b949e;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e6edf3;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Inline code style for code blocks attached to headers
+interactive-code.inline-code .interactive-code {
+  margin: 0;
+  border-radius: 0 0 6px 6px;
 }
 
 .preview-wrapper {
@@ -65,16 +118,9 @@
   }
 }
 
-// Rail-nav demo styles
-.rail-items {
-  display: flex;
-  flex-direction: column;
-  padding: 12px 12px 4px;
-  gap: 0;
-}
+// Rail-nav demo styles (wrapper now provided by component)
 
 mat-toolbar {
-  height: var(--rail-nav-header-height, 56px);
   background: light-dark(#e8e8e8, #2a2a2a);
   padding: 0 16px;
   gap: 8px;
@@ -106,152 +152,5 @@ mat-toolbar {
     background: var(--mat-sys-surface-container);
     padding: 2px 6px;
     border-radius: 4px;
-  }
-}
-
-// Fake PrismJS interactive code block
-.fake-prism {
-  position: relative;
-
-  // HTML fragment with toggle button in top-right corner
-  &.html-fragment {
-    .color-scheme-toggle {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-      padding: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ccc;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-
-      mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
-
-  // Inline boolean (checkbox + true/false text)
-  .inline-bool {
-    cursor: pointer;
-
-    input[type="checkbox"] {
-      display: none;
-    }
-
-    .token.keyword {
-      border-bottom: 1px dashed #cc99cd;
-    }
-  }
-
-  // Inline number picker
-  .inline-number {
-    position: relative;
-    cursor: pointer;
-
-    input[type="number"] {
-      position: absolute;
-      opacity: 0;
-      width: 50px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    .token.keyword {
-      border-bottom: 1px dashed #f08d49;
-    }
-
-    &:hover .token.keyword {
-      background: rgba(240, 141, 73, 0.2);
-    }
-  }
-
-  // Inline select for palette picker
-  .inline-select {
-    background: transparent;
-    border: none;
-    border-bottom: 1px dashed #f8c555;
-    color: #f8c555;
-    font-family: inherit;
-    font-size: inherit;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-
-    option {
-      background: #1e1e1e;
-      color: #f8c555;
-    }
-
-    &:focus {
-      outline: none;
-      border-bottom-color: #fff;
-    }
-  }
-
-  // Override lines with checkbox and color pickers
-  .override-line {
-    display: inline;
-
-    input[type="checkbox"] {
-      margin-right: 4px;
-      cursor: pointer;
-      accent-color: #7c4dff;
-      vertical-align: middle;
-    }
-
-    &.disabled {
-      opacity: 0.5;
-
-      .token.property,
-      .token.function,
-      .token.string {
-        color: #666;
-      }
-    }
-  }
-
-  // Inline color picker
-  .inline-color {
-    position: relative;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-
-    input[type="color"] {
-      position: absolute;
-      opacity: 0;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
-
-    .color-preview {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      vertical-align: middle;
-    }
-
-    .token.string {
-      border-bottom: 1px dashed currentColor;
-    }
-
-    &:hover .token.string {
-      background: rgba(255, 255, 255, 0.1);
-    }
   }
 }

@@ -1,44 +1,28 @@
-import { Component, signal, ElementRef, viewChild, effect } from '@angular/core';
+import { Component, signal, computed, ElementRef, viewChild, effect, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatRippleModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
-const PALETTES = [
-  'red', 'green', 'blue', 'yellow', 'cyan', 'magenta',
-  'orange', 'chartreuse', 'spring-green', 'azure', 'violet', 'rose'
-] as const;
 import {
   RailnavComponent,
   RailnavContainerComponent,
   RailnavContentComponent,
   RailnavItemComponent
 } from '@softwarity/rail-nav';
+// Register interactive-code custom elements
+import { registerInteractiveCode } from '@softwarity/interactive-code';
+registerInteractiveCode();
 
-interface ColorOverride {
-  enabled: boolean;
-  light: string;
-  dark: string;
-}
-
-interface SizeOverride {
-  enabled: boolean;
-  value: number;
-}
+const PALETTES = [
+  'red', 'green', 'blue', 'yellow', 'cyan', 'magenta',
+  'orange', 'chartreuse', 'spring-green', 'azure', 'violet', 'rose'
+] as const;
 
 @Component({
   imports: [
     MatButtonModule,
     MatIconModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-    MatRippleModule,
-    MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
     MatToolbarModule,
@@ -47,30 +31,43 @@ interface SizeOverride {
     RailnavContentComponent,
     RailnavItemComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './playground.component.html',
   styleUrl: './playground.component.scss'
 })
 export class PlaygroundComponent {
-  protected readonly palettes = PALETTES;
-  protected readonly selectedPalette = signal('violet');
+  // Basic demo signals
   protected isDarkMode = signal(document.body.classList.contains('dark-mode'));
+  protected title = signal('Softwarity');
   protected hasBackdrop = signal(true);
   protected position = signal<'start' | 'end'>('start');
   protected autoCollapse = signal(true);
   protected activeItem = signal('home');
   protected homeBadge = signal(3);
   protected favoritesDot = signal(true);
+  protected selectedPalette = signal('violet');
 
   // Size overrides
-  protected collapsedWidthOverride = signal<SizeOverride>({ enabled: false, value: 72 });
-  protected expandedWidthOverride = signal<SizeOverride>({ enabled: false, value: 280 });
-  protected headerHeightOverride = signal<SizeOverride>({ enabled: false, value: 56 });
+  protected collapsedWidthEnabled = signal(false);
+  protected collapsedWidth = signal(72);
+  protected expandedWidthEnabled = signal(false);
+  protected expandedWidth = signal(280);
+  protected headerHeightEnabled = signal(false);
+  protected headerHeight = signal(56);
 
-  // Color overrides
-  protected surfaceOverride = signal<ColorOverride>({ enabled: false, light: '#ffffff', dark: '#1e1e1e' });
-  protected backdropOverride = signal<ColorOverride>({ enabled: false, light: '#00000066', dark: '#00000099' });
-  protected primaryOverride = signal<ColorOverride>({ enabled: false, light: '#6750a4', dark: '#d0bcff' });
-  protected secondaryContainerOverride = signal<ColorOverride>({ enabled: false, light: '#e8def8', dark: '#4a4458' });
+  // Color overrides - separate light/dark signals
+  protected surfaceEnabled = signal(false);
+  protected surfaceLight = signal('#ffffff');
+  protected surfaceDark = signal('#1e1e1e');
+  protected backdropEnabled = signal(false);
+  protected backdropLight = signal('#00000066');
+  protected backdropDark = signal('#00000099');
+  protected primaryEnabled = signal(false);
+  protected primaryLight = signal('#6750a4');
+  protected primaryDark = signal('#d0bcff');
+  protected secondaryContainerEnabled = signal(false);
+  protected secondaryContainerLight = signal('#e8def8');
+  protected secondaryContainerDark = signal('#4a4458');
 
   // Preview area reference for applying CSS variables
   protected previewArea = viewChild<ElementRef<HTMLElement>>('previewArea');
@@ -82,58 +79,68 @@ export class PlaygroundComponent {
     { id: 'settings', icon: 'settings', label: 'Settings' }
   ];
 
+  // Computed for dark mode class display
+  protected darkModeClass = computed(() => this.isDarkMode() ? 'dark-mode' : '');
+
+  // List of available palettes for the select
+  protected readonly palettes = PALETTES;
+
   constructor() {
+    // Apply palette changes
+    effect(() => {
+      const palette = this.selectedPalette();
+      const html = document.documentElement;
+      PALETTES.forEach(p => html.classList.remove(p));
+      if (palette) {
+        html.classList.add(palette);
+      }
+    });
+
     // Apply CSS variables when overrides change
     effect(() => {
       const preview = this.previewArea()?.nativeElement;
       if (!preview) return;
 
-      const collapsedWidth = this.collapsedWidthOverride();
-      const expandedWidth = this.expandedWidthOverride();
-      const headerHeight = this.headerHeightOverride();
-      const surface = this.surfaceOverride();
-      const backdrop = this.backdropOverride();
-      const primary = this.primaryOverride();
-      const secondaryContainer = this.secondaryContainerOverride();
-
-      if (collapsedWidth.enabled) {
-        preview.style.setProperty('--rail-nav-collapsed-width', `${collapsedWidth.value}px`);
+      // Size overrides
+      if (this.collapsedWidthEnabled()) {
+        preview.style.setProperty('--rail-nav-collapsed-width', `${this.collapsedWidth()}px`);
       } else {
         preview.style.removeProperty('--rail-nav-collapsed-width');
       }
 
-      if (expandedWidth.enabled) {
-        preview.style.setProperty('--rail-nav-expanded-width', `${expandedWidth.value}px`);
+      if (this.expandedWidthEnabled()) {
+        preview.style.setProperty('--rail-nav-expanded-width', `${this.expandedWidth()}px`);
       } else {
         preview.style.removeProperty('--rail-nav-expanded-width');
       }
 
-      if (headerHeight.enabled) {
-        preview.style.setProperty('--rail-nav-header-height', `${headerHeight.value}px`);
+      if (this.headerHeightEnabled()) {
+        preview.style.setProperty('--rail-nav-header-height', `${this.headerHeight()}px`);
       } else {
         preview.style.removeProperty('--rail-nav-header-height');
       }
 
-      if (surface.enabled) {
-        preview.style.setProperty('--rail-nav-surface-color', `light-dark(${surface.light}, ${surface.dark})`);
+      // Color overrides
+      if (this.surfaceEnabled()) {
+        preview.style.setProperty('--rail-nav-surface-color', `light-dark(${this.surfaceLight()}, ${this.surfaceDark()})`);
       } else {
         preview.style.removeProperty('--rail-nav-surface-color');
       }
 
-      if (backdrop.enabled) {
-        preview.style.setProperty('--rail-nav-backdrop-color', `light-dark(${backdrop.light}, ${backdrop.dark})`);
+      if (this.backdropEnabled()) {
+        preview.style.setProperty('--rail-nav-backdrop-color', `light-dark(${this.backdropLight()}, ${this.backdropDark()})`);
       } else {
         preview.style.removeProperty('--rail-nav-backdrop-color');
       }
 
-      if (primary.enabled) {
-        preview.style.setProperty('--rail-nav-primary', `light-dark(${primary.light}, ${primary.dark})`);
+      if (this.primaryEnabled()) {
+        preview.style.setProperty('--rail-nav-primary', `light-dark(${this.primaryLight()}, ${this.primaryDark()})`);
       } else {
         preview.style.removeProperty('--rail-nav-primary');
       }
 
-      if (secondaryContainer.enabled) {
-        preview.style.setProperty('--rail-nav-secondary-container', `light-dark(${secondaryContainer.light}, ${secondaryContainer.dark})`);
+      if (this.secondaryContainerEnabled()) {
+        preview.style.setProperty('--rail-nav-secondary-container', `light-dark(${this.secondaryContainerLight()}, ${this.secondaryContainerDark()})`);
       } else {
         preview.style.removeProperty('--rail-nav-secondary-container');
       }
@@ -145,68 +152,7 @@ export class PlaygroundComponent {
     document.body.classList.toggle('dark-mode', this.isDarkMode());
   }
 
-  toggleBackdrop(): void {
-    this.hasBackdrop.update(b => !b);
-  }
-
-  togglePosition(): void {
-    this.position.update(p => p === 'start' ? 'end' : 'start');
-  }
-
-  toggleAutoCollapse(): void {
-    this.autoCollapse.update(a => !a);
-  }
-
   selectItem(id: string): void {
     this.activeItem.set(id);
-  }
-
-  toggleOverride(type: 'surface' | 'backdrop' | 'primary' | 'secondaryContainer'): void {
-    const signalMap = {
-      surface: this.surfaceOverride,
-      backdrop: this.backdropOverride,
-      primary: this.primaryOverride,
-      secondaryContainer: this.secondaryContainerOverride
-    };
-    signalMap[type].update(o => ({ ...o, enabled: !o.enabled }));
-  }
-
-  updateOverrideColor(type: 'surface' | 'backdrop' | 'primary' | 'secondaryContainer', mode: 'light' | 'dark', event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const signalMap = {
-      surface: this.surfaceOverride,
-      backdrop: this.backdropOverride,
-      primary: this.primaryOverride,
-      secondaryContainer: this.secondaryContainerOverride
-    };
-    signalMap[type].update(o => ({ ...o, [mode]: input.value }));
-  }
-
-  toggleSizeOverride(type: 'collapsedWidth' | 'expandedWidth' | 'headerHeight'): void {
-    const signalMap = {
-      collapsedWidth: this.collapsedWidthOverride,
-      expandedWidth: this.expandedWidthOverride,
-      headerHeight: this.headerHeightOverride
-    };
-    signalMap[type].update(o => ({ ...o, enabled: !o.enabled }));
-  }
-
-  updateSizeOverride(type: 'collapsedWidth' | 'expandedWidth' | 'headerHeight', event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const signalMap = {
-      collapsedWidth: this.collapsedWidthOverride,
-      expandedWidth: this.expandedWidthOverride,
-      headerHeight: this.headerHeightOverride
-    };
-    signalMap[type].update(o => ({ ...o, value: input.valueAsNumber || 0 }));
-  }
-
-  onPaletteChange(palette: string): void {
-    const html = document.documentElement;
-    PALETTES.forEach(p => html.classList.remove(p));
-    if (palette) {
-      html.classList.add(palette);
-    }
-    this.selectedPalette.set(palette);
   }
 }

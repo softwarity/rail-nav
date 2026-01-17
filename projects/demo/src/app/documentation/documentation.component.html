@@ -4,32 +4,39 @@
   <!-- Installation -->
   <article class="doc-section">
     <h3>Installation</h3>
-    <pre><code><span class="token function">npm</span> install &#64;softwarity/rail-nav</code></pre>
+    <interactive-code language="shell">
+      <textarea>npm install @softwarity/rail-nav</textarea>
+    </interactive-code>
   </article>
 
   <!-- Usage -->
   <article class="doc-section">
     <h3>Usage</h3>
-    <pre><code><span class="token keyword">import</span> <span class="token punctuation">&#123;</span>
-  RailnavComponent<span class="token punctuation">,</span>
-  RailnavContainerComponent<span class="token punctuation">,</span>
+    <h4>Component</h4>
+    <interactive-code language="typescript">
+      <textarea>import {
+  RailnavComponent,
+  RailnavContainerComponent,
   RailnavContentComponent
-<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'&#64;softwarity/rail-nav'</span><span class="token punctuation">;</span>
+} from '@softwarity/rail-nav';
 
-<span class="token decorator">&#64;Component</span><span class="token punctuation">(&#123;</span>
-  <span class="token property">imports</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">template</span><span class="token punctuation">:</span> <span class="token template-string">`
-    <span class="token tag">&lt;rail-nav-container&gt;</span>
-      <span class="token tag">&lt;rail-nav</span> <span class="token attr-name">title</span>=<span class="token attr-value">"My App"</span> <span class="token attr-name">subtitle</span>=<span class="token attr-value">"v1.0"</span><span class="token tag">&gt;</span>
-        <span class="token comment">&lt;!-- Navigation items --&gt;</span>
-      <span class="token tag">&lt;/rail-nav&gt;</span>
-      <span class="token tag">&lt;rail-nav-content&gt;</span>
-        <span class="token comment">&lt;!-- Page content --&gt;</span>
-      <span class="token tag">&lt;/rail-nav-content&gt;</span>
-    <span class="token tag">&lt;/rail-nav-container&gt;</span>
-  `</span>
-<span class="token punctuation">&#125;)</span>
-<span class="token keyword">export class</span> <span class="token class-name">AppComponent</span> <span class="token punctuation">&#123;&#125;</span></code></pre>
+@Component({
+  imports: [RailnavComponent, RailnavContainerComponent, RailnavContentComponent],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {}</textarea>
+    </interactive-code>
+    <h4>Template</h4>
+    <interactive-code language="html">
+      <textarea><rail-nav-container>
+  <rail-nav title="My App" subtitle="v1.0">
+    <!-- Navigation items -->
+  </rail-nav>
+  <rail-nav-content>
+    <!-- Page content -->
+  </rail-nav-content>
+</rail-nav-container></textarea>
+    </interactive-code>
   </article>
 
   <!-- API - RailnavComponent -->
@@ -235,20 +242,22 @@
     </div>
 
     <h4>Usage</h4>
-    <pre><code><span class="token tag">&lt;rail-nav-item</span>
-  <span class="token attr-name">[label]</span>=<span class="token attr-value">"'Home'"</span>
-  <span class="token attr-name">[badge]</span>=<span class="token attr-value">"3"</span>
-  <span class="token attr-name">[routerLink]</span>=<span class="token attr-value">"'/home'"</span><span class="token tag">&gt;</span>
-  <span class="token tag">&lt;mat-icon&gt;</span>home<span class="token tag">&lt;/mat-icon&gt;</span>
-<span class="token tag">&lt;/rail-nav-item&gt;</span>
+    <interactive-code language="html">
+      <textarea><rail-nav-item
+  [label]="'Home'"
+  [badge]="3"
+  [routerLink]="'/home'">
+  <mat-icon>home</mat-icon>
+</rail-nav-item>
 
-<span class="token comment">&lt;!-- Without router --&gt;</span>
-<span class="token tag">&lt;rail-nav-item</span>
-  <span class="token attr-name">[label]</span>=<span class="token attr-value">"'Settings'"</span>
-  <span class="token attr-name">[active]</span>=<span class="token attr-value">"isSettingsActive"</span>
-  <span class="token attr-name">(itemClick)</span>=<span class="token attr-value">"onSettingsClick()"</span><span class="token tag">&gt;</span>
-  <span class="token tag">&lt;mat-icon&gt;</span>settings<span class="token tag">&lt;/mat-icon&gt;</span>
-<span class="token tag">&lt;/rail-nav-item&gt;</span></code></pre>
+<!-- Without router -->
+<rail-nav-item
+  [label]="'Settings'"
+  [active]="isSettingsActive"
+  (itemClick)="onSettingsClick()">
+  <mat-icon>settings</mat-icon>
+</rail-nav-item></textarea>
+    </interactive-code>
   </article>
 
   <!-- Features -->
@@ -272,15 +281,17 @@
   <article class="doc-section">
     <h3>SCSS Theme Override</h3>
     <p>Use the SCSS mixin to customize colors following the Angular Material pattern:</p>
-    <pre><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+    <interactive-code language="scss">
+      <textarea>@use '@softwarity/rail-nav/rail-nav-theme' as rail-nav;
 
-<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
-    <span class="token property">backdrop-color</span><span class="token punctuation">:</span> rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.5)<span class="token punctuation">,</span>
-    <span class="token property">primary</span><span class="token punctuation">:</span> #6200ea<span class="token punctuation">,</span>
-    <span class="token property">surface-color</span><span class="token punctuation">:</span> #f5f5f5<span class="token punctuation">,</span>
-  <span class="token punctuation">))</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+:root {
+  @include rail-nav.overrides((
+    backdrop-color: rgba(0, 0, 0, 0.5),
+    primary: #6200ea,
+    surface-color: #f5f5f5,
+  ));
+}</textarea>
+    </interactive-code>
 
     <h4>Available Tokens</h4>
     <div class="api-table-wrapper">
@@ -315,20 +326,22 @@
   <article class="doc-section">
     <h3>CSS Custom Properties</h3>
     <p>You can also use CSS custom properties directly:</p>
-    <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 72px<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-expanded-width</span><span class="token punctuation">:</span> fit-content<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-header-height</span><span class="token punctuation">:</span> 56px<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> rgba(0, 0, 0, 0.5)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-surface</span><span class="token punctuation">:</span> #1c1b1f<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-surface-variant</span><span class="token punctuation">:</span> #49454f<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-secondary-container</span><span class="token punctuation">:</span> #e8def8<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-secondary-container</span><span class="token punctuation">:</span> #1d192b<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-primary</span><span class="token punctuation">:</span> #6750a4<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-error</span><span class="token punctuation">:</span> #b3261e<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-error</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+    <interactive-code language="scss">
+      <textarea>:root {
+  --rail-nav-collapsed-width: 72px;
+  --rail-nav-expanded-width: fit-content;
+  --rail-nav-header-height: 56px;
+  --rail-nav-backdrop-color: rgba(0, 0, 0, 0.5);
+  --rail-nav-surface-color: #ffffff;
+  --rail-nav-on-surface: #1c1b1f;
+  --rail-nav-on-surface-variant: #49454f;
+  --rail-nav-secondary-container: #e8def8;
+  --rail-nav-on-secondary-container: #1d192b;
+  --rail-nav-primary: #6750a4;
+  --rail-nav-error: #b3261e;
+  --rail-nav-on-error: #ffffff;
+}</textarea>
+    </interactive-code>
     <p>By default, the component uses Material Design 3 system tokens (<code>--mat-sys-*</code>) as fallbacks.</p>
 
     <div class="info-box">
@@ -338,15 +351,17 @@
         <li><strong>Global configuration</strong> — Define values once in <code>:root</code> and apply to all instances</li>
         <li><strong>Responsive design</strong> — Use media queries to adapt dimensions to different screen sizes</li>
       </ul>
-      <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 72px<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
+      <interactive-code language="scss">
+        <textarea>:root {
+  --rail-nav-collapsed-width: 72px;
+}
 
-<span class="token atrule">&#64;media</span> (max-width: 600px) <span class="token punctuation">&#123;</span>
-  <span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-    <span class="token property">--rail-nav-collapsed-width</span><span class="token punctuation">:</span> 56px<span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+@media (max-width: 600px) {
+  :root {
+    --rail-nav-collapsed-width: 56px;
+  }
+}</textarea>
+      </interactive-code>
     </div>
   </article>
 
@@ -356,42 +371,48 @@
     <p>Use the CSS <code>light-dark()</code> function to define colors that automatically adapt to the user's color scheme preference:</p>
 
     <h4>With SCSS mixin</h4>
-    <pre><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+    <interactive-code language="scss">
+      <textarea>@use '@softwarity/rail-nav/rail-nav-theme' as rail-nav;
 
-<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
-    <span class="token property">backdrop-color</span><span class="token punctuation">:</span> light-dark(rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.4)<span class="token punctuation">,</span> rgba(0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0<span class="token punctuation">,</span> 0.6))<span class="token punctuation">,</span>
-    <span class="token property">surface-color</span><span class="token punctuation">:</span> light-dark(#ffffff<span class="token punctuation">,</span> #1e1e1e)<span class="token punctuation">,</span>
-    <span class="token property">on-surface</span><span class="token punctuation">:</span> light-dark(#1c1b1f<span class="token punctuation">,</span> #e6e1e5)<span class="token punctuation">,</span>
-    <span class="token property">primary</span><span class="token punctuation">:</span> light-dark(#6750a4<span class="token punctuation">,</span> #d0bcff)<span class="token punctuation">,</span>
-  <span class="token punctuation">))</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+:root {
+  @include rail-nav.overrides((
+    backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+    surface-color: light-dark(#ffffff, #1e1e1e),
+    on-surface: light-dark(#1c1b1f, #e6e1e5),
+    primary: light-dark(#6750a4, #d0bcff),
+  ));
+}</textarea>
+    </interactive-code>
 
     <h4>With CSS custom properties</h4>
-    <pre><code><span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token property">--rail-nav-backdrop-color</span><span class="token punctuation">:</span> light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6))<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-surface-color</span><span class="token punctuation">:</span> light-dark(#ffffff, #1e1e1e)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-surface</span><span class="token punctuation">:</span> light-dark(#1c1b1f, #e6e1e5)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-surface-variant</span><span class="token punctuation">:</span> light-dark(#49454f, #cac4d0)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-secondary-container</span><span class="token punctuation">:</span> light-dark(#e8def8, #4a4458)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-secondary-container</span><span class="token punctuation">:</span> light-dark(#1d192b, #e8def8)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-primary</span><span class="token punctuation">:</span> light-dark(#6750a4, #d0bcff)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-error</span><span class="token punctuation">:</span> light-dark(#b3261e, #f2b8b5)<span class="token punctuation">;</span>
-  <span class="token property">--rail-nav-on-error</span><span class="token punctuation">:</span> light-dark(#ffffff, #601410)<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+    <interactive-code language="scss">
+      <textarea>:root {
+  --rail-nav-backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  --rail-nav-surface-color: light-dark(#ffffff, #1e1e1e);
+  --rail-nav-on-surface: light-dark(#1c1b1f, #e6e1e5);
+  --rail-nav-on-surface-variant: light-dark(#49454f, #cac4d0);
+  --rail-nav-secondary-container: light-dark(#e8def8, #4a4458);
+  --rail-nav-on-secondary-container: light-dark(#1d192b, #e8def8);
+  --rail-nav-primary: light-dark(#6750a4, #d0bcff);
+  --rail-nav-error: light-dark(#b3261e, #f2b8b5);
+  --rail-nav-on-error: light-dark(#ffffff, #601410);
+}</textarea>
+    </interactive-code>
 
     <h4>Setting up color-scheme</h4>
     <p>For <code>light-dark()</code> to work, you need to set the <code>color-scheme</code> property on your document:</p>
-    <pre><code><span class="token comment">/* styles.scss */</span>
-<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
-  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light<span class="token punctuation">;</span>
-  <span class="token selector">&amp;.dark-mode</span> <span class="token punctuation">&#123;</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
+    <interactive-code language="scss">
+      <textarea>/* styles.scss */
+html {
+  color-scheme: light;
+  &.dark-mode { color-scheme: dark; }
+}
 
-<span class="token comment">/* Or use prefers-color-scheme for system preference */</span>
-<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
-  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light dark<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+/* Or use prefers-color-scheme for system preference */
+html {
+  color-scheme: light dark;
+}</textarea>
+    </interactive-code>
     <p><strong>Note:</strong> If you're using Angular Material with a theme, the <code>color-scheme</code> is typically set automatically based on your theme configuration.</p>
   </article>
 </section>

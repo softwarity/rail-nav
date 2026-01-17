@@ -2,42 +2,58 @@
   <h2>Playground</h2>
 
   <!-- Interactive index.html fragment with color scheme toggle -->
-  <pre class="fake-prism html-fragment"><code><span class="token comment">&lt;!-- index.html --&gt;</span>
-<span class="token tag">&lt;body</span> <span class="token attr-name">class</span>=<span class="token attr-value">"{{ isDarkMode() ? 'dark-mode' : '' }}"</span><span class="token tag">&gt;</span>...<span class="token tag">&lt;/body&gt;</span></code><button class="color-scheme-toggle" (click)="toggleColorScheme()" [title]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">@if (isDarkMode()) {<mat-icon>light_mode</mat-icon>} @else {<mat-icon>dark_mode</mat-icon>}</button></pre>
+  <div class="code-header">
+    <span>index.html</span>
+    <button class="color-scheme-toggle" (click)="toggleColorScheme()" [title]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">
+      @if (isDarkMode()) {
+        <mat-icon>light_mode</mat-icon>
+      } @else {
+        <mat-icon>dark_mode</mat-icon>
+      }
+    </button>
+  </div>
+  <interactive-code class="inline-code" language="html">
+    <textarea><body class="${darkModeClass}">...</body></textarea>
+    <code-binding key="darkModeClass" type="readonly" [value]="darkModeClass()"></code-binding>
+  </interactive-code>
 
   <!-- Interactive HTML Code -->
-  <pre class="fake-prism html-fragment"><code><span class="token tag">&lt;rail-nav-container</span> <span class="token attr-name">[showBackdrop]</span>=<span class="token attr-value">"</span><label class="inline-bool"><input type="checkbox" [checked]="hasBackdrop()" (change)="toggleBackdrop()"><span class="token keyword">{{ hasBackdrop() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span>
-  <span class="token tag">&lt;rail-nav</span> <span class="token attr-name">[position]</span>=<span class="token attr-value">"'</span><label class="inline-bool"><input type="checkbox" [checked]="position() === 'end'" (change)="togglePosition()"><span class="token keyword">{{ position() }}</span></label><span class="token attr-value">'"</span> <span class="token attr-name">[autoCollapse]</span>=<span class="token attr-value">"</span><label class="inline-bool"><input type="checkbox" [checked]="autoCollapse()" (change)="toggleAutoCollapse()"><span class="token keyword">{{ autoCollapse() }}</span></label><span class="token attr-value">"</span> <span class="token attr-name">title</span>=<span class="token attr-value">"Softwarity"</span> <span class="token attr-name">subtitle</span>=<span class="token attr-value">"Rail Nav"</span><span class="token tag">&gt;</span>
-    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Home"</span> <span class="token attr-name">[badge]</span>=<span class="token attr-value">"</span><label class="inline-number"><input type="number" min="0" max="99" [value]="homeBadge()" (input)="homeBadge.set($any($event.target).valueAsNumber || 0)"><span class="token keyword">{{ homeBadge() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>home<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
-    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Favorites"</span> <span class="token attr-name">[badge]</span>=<span class="token attr-value">"</span><label class="inline-bool"><input type="checkbox" [checked]="favoritesDot()" (change)="favoritesDot.set(!favoritesDot())"><span class="token keyword">{{ favoritesDot() }}</span></label><span class="token attr-value">"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>favorite<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
-    <span class="token tag">&lt;rail-nav-item</span> <span class="token attr-name">label</span>=<span class="token attr-value">"Settings"</span> <span class="token attr-name">routerLink</span>=<span class="token attr-value">"/settings"</span><span class="token tag">&gt;</span><span class="token tag">&lt;mat-icon&gt;</span>settings<span class="token tag">&lt;/mat-icon&gt;</span><span class="token tag">&lt;/rail-nav-item&gt;</span>
-  <span class="token tag">&lt;/rail-nav&gt;</span>
-  <span class="token tag">&lt;rail-nav-content&gt;</span><span class="token comment">&lt;!-- auto-detects position & width --&gt;</span><span class="token tag">&lt;/rail-nav-content&gt;</span>
-<span class="token tag">&lt;/rail-nav-container&gt;</span></code></pre>
+  <interactive-code language="html">
+    <textarea><rail-nav-container [showBackdrop]="${hasBackdrop}">
+  <rail-nav [position]="'${position}'" [autoCollapse]="${autoCollapse}" title="${title}" subtitle="Rail Nav">
+    <rail-nav-item label="Home" [badge]="${homeBadge}"><mat-icon>home</mat-icon></rail-nav-item>
+    <rail-nav-item label="Favorites" [badge]="${favoritesDot}"><mat-icon>favorite</mat-icon></rail-nav-item>
+    <rail-nav-item label="Settings" routerLink="/settings"><mat-icon>settings</mat-icon></rail-nav-item>
+  </rail-nav>
+  <rail-nav-content><!-- auto-detects position & width --></rail-nav-content>
+</rail-nav-container></textarea>
+    <code-binding key="title" type="string" [value]="title()" (change)="title.set($any($event).detail)"></code-binding>
+    <code-binding key="hasBackdrop" type="boolean" [value]="hasBackdrop()" (change)="hasBackdrop.set($any($event).detail)"></code-binding>
+    <code-binding key="position" type="select" options="start,end" [value]="position()" (change)="position.set($any($event).detail)"></code-binding>
+    <code-binding key="autoCollapse" type="boolean" [value]="autoCollapse()" (change)="autoCollapse.set($any($event).detail)"></code-binding>
+    <code-binding key="homeBadge" type="number" min="0" max="99" [value]="homeBadge()" (change)="homeBadge.set($any($event).detail)"></code-binding>
+    <code-binding key="favoritesDot" type="boolean" [value]="favoritesDot()" (change)="favoritesDot.set($any($event).detail)"></code-binding>
+  </interactive-code>
 
   <!-- Live Preview -->
   <div class="preview-wrapper">
     <div class="preview-area rail-preview" #previewArea>
       <rail-nav-container [showBackdrop]="hasBackdrop()">
-        <rail-nav #railnav [position]="position()" [autoCollapse]="autoCollapse()" title="Softwarity" subtitle="Rail Nav">
-          <!-- Navigation items -->
-          <nav class="rail-items">
-            @for (item of navItems; track item.id) {
-              <rail-nav-item
-                [label]="item.label"
-                [active]="activeItem() === item.id"
-                [badge]="item.id === 'home' ? (homeBadge() || undefined) : item.id === 'favorites' ? (favoritesDot() || undefined) : undefined"
-                (itemClick)="selectItem(item.id)">
-                <mat-icon>{{ item.icon }}</mat-icon>
-              </rail-nav-item>
-            }
-          </nav>
+        <rail-nav #railnav [position]="position()" [autoCollapse]="autoCollapse()" [title]="title()" subtitle="Rail Nav">
+          @for (item of navItems; track item.id) {
+            <rail-nav-item
+              [label]="item.label"
+              [active]="activeItem() === item.id"
+              [badge]="item.id === 'home' ? (homeBadge() || undefined) : item.id === 'favorites' ? (favoritesDot() || undefined) : undefined"
+              (itemClick)="selectItem(item.id)">
+              <mat-icon>{{ item.icon }}</mat-icon>
+            </rail-nav-item>
+          }
         </rail-nav>
 
         <rail-nav-content>
           <mat-toolbar>
-            <mat-form-field appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Search</mat-label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" >
               <input matInput placeholder="Search...">
               <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
@@ -55,28 +71,53 @@
     </div>
   </div>
 
-  <!-- Usage SCSS Code -->
-  <pre class="fake-prism"><code><span class="token keyword">&#64;use</span> <span class="token string">'&#64;angular/material'</span> <span class="token keyword">as</span> mat<span class="token punctuation">;</span>
+  <!-- SCSS Material Theme -->
+  <interactive-code language="scss">
+    <textarea>@use '@angular/material' as mat;
 
-<span class="token selector">html</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">&#64;include</span> mat.<span class="token function">theme</span><span class="token punctuation">((</span><span class="token property">color</span><span class="token punctuation">:</span> mat.<span class="token variable">$</span><select class="inline-select" [value]="selectedPalette()" (change)="onPaletteChange($any($event.target).value)">@for (p of palettes; track p) {<option [value]="p">{{ p }}</option>}</select><span class="token variable">-palette</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
-  <span class="token property">color-scheme</span><span class="token punctuation">:</span> light<span class="token punctuation">;</span>
-  <span class="token selector">&amp; body.dark-mode</span> <span class="token punctuation">&#123;</span> <span class="token property">color-scheme</span><span class="token punctuation">:</span> dark<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+html {
+  @include mat.theme((color: mat.$${palette}-palette));
+  color-scheme: light;
+  & body.dark-mode { color-scheme: dark; }
+}</textarea>
+    <code-binding key="palette" type="select" options="red,green,blue,yellow,cyan,magenta,orange,chartreuse,spring-green,azure,violet,rose" [value]="selectedPalette()" (change)="selectedPalette.set($any($event).detail)"></code-binding>
+  </interactive-code>
 
-  <!-- SCSS Customization with interactive pickers -->
-  <pre class="fake-prism"><code><span class="token comment">/* SCSS Theme Override */</span>
-<span class="token keyword">&#64;use</span> <span class="token string">'&#64;softwarity/rail-nav'</span> <span class="token keyword">as</span> rail-nav<span class="token punctuation">;</span>
+  <!-- SCSS Overrides -->
+  <interactive-code language="scss">
+    <textarea>/* SCSS Theme Override */
+@use '@softwarity/rail-nav/rail-nav-theme' as rail-nav;
 
-<span class="token selector">:root</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">&#64;include</span> rail-nav.<span class="token function">overrides</span><span class="token punctuation">((</span>
-    <span class="override-line" [class.disabled]="!collapsedWidthOverride().enabled"><input type="checkbox" [checked]="collapsedWidthOverride().enabled" (change)="toggleSizeOverride('collapsedWidth')"><span class="token comment" [hidden]="collapsedWidthOverride().enabled">// </span><span class="token property">collapsed-width</span><span class="token punctuation">:</span> <label class="inline-number"><input type="number" min="48" max="120" step="4" [value]="collapsedWidthOverride().value" (input)="updateSizeOverride('collapsedWidth', $event)"><span class="token keyword">{{ collapsedWidthOverride().value }}px</span></label><span class="token punctuation">,</span></span>
-    <span class="override-line" [class.disabled]="!expandedWidthOverride().enabled"><input type="checkbox" [checked]="expandedWidthOverride().enabled" (change)="toggleSizeOverride('expandedWidth')"><span class="token comment" [hidden]="expandedWidthOverride().enabled">// </span><span class="token property">expanded-width</span><span class="token punctuation">:</span> <label class="inline-number"><input type="number" min="150" max="400" step="10" [value]="expandedWidthOverride().value" (input)="updateSizeOverride('expandedWidth', $event)"><span class="token keyword">{{ expandedWidthOverride().value }}px</span></label><span class="token punctuation">,</span></span>
-    <span class="override-line" [class.disabled]="!headerHeightOverride().enabled"><input type="checkbox" [checked]="headerHeightOverride().enabled" (change)="toggleSizeOverride('headerHeight')"><span class="token comment" [hidden]="headerHeightOverride().enabled">// </span><span class="token property">header-height</span><span class="token punctuation">:</span> <label class="inline-number"><input type="number" min="40" max="80" step="4" [value]="headerHeightOverride().value" (input)="updateSizeOverride('headerHeight', $event)"><span class="token keyword">{{ headerHeightOverride().value }}px</span></label><span class="token punctuation">,</span></span>
-    <span class="override-line" [class.disabled]="!surfaceOverride().enabled"><input type="checkbox" [checked]="surfaceOverride().enabled" (change)="toggleOverride('surface')"><span class="token comment" [hidden]="surfaceOverride().enabled">// </span><span class="token property">surface-color</span><span class="token punctuation">:</span> <span class="token function">light-dark</span><span class="token punctuation">(</span><label class="inline-color"><input type="color" [value]="surfaceOverride().light" (input)="updateOverrideColor('surface', 'light', $event)"><span class="color-preview" [style.background]="surfaceOverride().light"></span><span class="token string">{{ surfaceOverride().light }}</span></label><span class="token punctuation">,</span> <label class="inline-color"><input type="color" [value]="surfaceOverride().dark" (input)="updateOverrideColor('surface', 'dark', $event)"><span class="color-preview" [style.background]="surfaceOverride().dark"></span><span class="token string">{{ surfaceOverride().dark }}</span></label><span class="token punctuation">),</span></span>
-    <span class="override-line" [class.disabled]="!backdropOverride().enabled"><input type="checkbox" [checked]="backdropOverride().enabled" (change)="toggleOverride('backdrop')"><span class="token comment" [hidden]="backdropOverride().enabled">// </span><span class="token property">backdrop-color</span><span class="token punctuation">:</span> <span class="token function">light-dark</span><span class="token punctuation">(</span><label class="inline-color"><input type="color" [value]="backdropOverride().light" (input)="updateOverrideColor('backdrop', 'light', $event)"><span class="color-preview" [style.background]="backdropOverride().light"></span><span class="token string">{{ backdropOverride().light }}</span></label><span class="token punctuation">,</span> <label class="inline-color"><input type="color" [value]="backdropOverride().dark" (input)="updateOverrideColor('backdrop', 'dark', $event)"><span class="color-preview" [style.background]="backdropOverride().dark"></span><span class="token string">{{ backdropOverride().dark }}</span></label><span class="token punctuation">),</span></span>
-    <span class="override-line" [class.disabled]="!primaryOverride().enabled"><input type="checkbox" [checked]="primaryOverride().enabled" (change)="toggleOverride('primary')"><span class="token comment" [hidden]="primaryOverride().enabled">// </span><span class="token property">primary</span><span class="token punctuation">:</span> <span class="token function">light-dark</span><span class="token punctuation">(</span><label class="inline-color"><input type="color" [value]="primaryOverride().light" (input)="updateOverrideColor('primary', 'light', $event)"><span class="color-preview" [style.background]="primaryOverride().light"></span><span class="token string">{{ primaryOverride().light }}</span></label><span class="token punctuation">,</span> <label class="inline-color"><input type="color" [value]="primaryOverride().dark" (input)="updateOverrideColor('primary', 'dark', $event)"><span class="color-preview" [style.background]="primaryOverride().dark"></span><span class="token string">{{ primaryOverride().dark }}</span></label><span class="token punctuation">),</span></span>
-    <span class="override-line" [class.disabled]="!secondaryContainerOverride().enabled"><input type="checkbox" [checked]="secondaryContainerOverride().enabled" (change)="toggleOverride('secondaryContainer')"><span class="token comment" [hidden]="secondaryContainerOverride().enabled">// </span><span class="token property">secondary-container</span><span class="token punctuation">:</span> <span class="token function">light-dark</span><span class="token punctuation">(</span><label class="inline-color"><input type="color" [value]="secondaryContainerOverride().light" (input)="updateOverrideColor('secondaryContainer', 'light', $event)"><span class="color-preview" [style.background]="secondaryContainerOverride().light"></span><span class="token string">{{ secondaryContainerOverride().light }}</span></label><span class="token punctuation">,</span> <label class="inline-color"><input type="color" [value]="secondaryContainerOverride().dark" (input)="updateOverrideColor('secondaryContainer', 'dark', $event)"><span class="color-preview" [style.background]="secondaryContainerOverride().dark"></span><span class="token string">{{ secondaryContainerOverride().dark }}</span></label><span class="token punctuation">)</span></span>
-  <span class="token punctuation">))</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span></code></pre>
+:root {
+  @include rail-nav.overrides((
+    ${collapsedWidthEnabled}collapsed-width: ${collapsedWidth}px,
+    ${expandedWidthEnabled}expanded-width: ${expandedWidth}px,
+    ${headerHeightEnabled}header-height: ${headerHeight}px,
+    ${surfaceEnabled}surface-color: light-dark(${surfaceLight}, ${surfaceDark}),
+    ${backdropEnabled}backdrop-color: light-dark(${backdropLight}, ${backdropDark}),
+    ${primaryEnabled}primary: light-dark(${primaryLight}, ${primaryDark}),
+    ${secondaryContainerEnabled}secondary-container: light-dark(${secondaryContainerLight}, ${secondaryContainerDark})
+  ));
+}</textarea>
+    <!-- Size overrides -->
+    <code-binding key="collapsedWidthEnabled" type="comment" [value]="collapsedWidthEnabled()" (change)="collapsedWidthEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="collapsedWidth" type="number" min="48" max="120" step="4" [value]="collapsedWidth()" (change)="collapsedWidth.set($any($event).detail)" [disabled]="!collapsedWidthEnabled()"></code-binding>
+    <code-binding key="expandedWidthEnabled" type="comment" [value]="expandedWidthEnabled()" (change)="expandedWidthEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="expandedWidth" type="number" min="150" max="400" step="10" [value]="expandedWidth()" (change)="expandedWidth.set($any($event).detail)" [disabled]="!expandedWidthEnabled()"></code-binding>
+    <code-binding key="headerHeightEnabled" type="comment" [value]="headerHeightEnabled()" (change)="headerHeightEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="headerHeight" type="number" min="40" max="80" step="4" [value]="headerHeight()" (change)="headerHeight.set($any($event).detail)" [disabled]="!headerHeightEnabled()"></code-binding>
+    <!-- Color overrides -->
+    <code-binding key="surfaceEnabled" type="comment" [value]="surfaceEnabled()" (change)="surfaceEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="surfaceLight" type="color" [value]="surfaceLight()" (change)="surfaceLight.set($any($event).detail)" [disabled]="!surfaceEnabled()"></code-binding>
+    <code-binding key="surfaceDark" type="color" [value]="surfaceDark()" (change)="surfaceDark.set($any($event).detail)" [disabled]="!surfaceEnabled()"></code-binding>
+    <code-binding key="backdropEnabled" type="comment" [value]="backdropEnabled()" (change)="backdropEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="backdropLight" type="color" [value]="backdropLight()" (change)="backdropLight.set($any($event).detail)" [disabled]="!backdropEnabled()"></code-binding>
+    <code-binding key="backdropDark" type="color" [value]="backdropDark()" (change)="backdropDark.set($any($event).detail)" [disabled]="!backdropEnabled()"></code-binding>
+    <code-binding key="primaryEnabled" type="comment" [value]="primaryEnabled()" (change)="primaryEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="primaryLight" type="color" [value]="primaryLight()" (change)="primaryLight.set($any($event).detail)" [disabled]="!primaryEnabled()"></code-binding>
+    <code-binding key="primaryDark" type="color" [value]="primaryDark()" (change)="primaryDark.set($any($event).detail)" [disabled]="!primaryEnabled()"></code-binding>
+    <code-binding key="secondaryContainerEnabled" type="comment" [value]="secondaryContainerEnabled()" (change)="secondaryContainerEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="secondaryContainerLight" type="color" [value]="secondaryContainerLight()" (change)="secondaryContainerLight.set($any($event).detail)" [disabled]="!secondaryContainerEnabled()"></code-binding>
+    <code-binding key="secondaryContainerDark" type="color" [value]="secondaryContainerDark()" (change)="secondaryContainerDark.set($any($event).detail)" [disabled]="!secondaryContainerEnabled()"></code-binding>
+  </interactive-code>
 </section>
