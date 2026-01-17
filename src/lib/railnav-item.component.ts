@@ -2,11 +2,27 @@ import { Component, input, output, computed, inject, ChangeDetectionStrategy } f
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatRippleModule } from '@angular/material/core';
 import { RailnavComponent } from './railnav.component';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'rail-nav-item',
-  imports: [RouterLink, RouterLinkActive, MatRippleModule],
+  imports: [RouterLink, RouterLinkActive, MatRippleModule, NgTemplateOutlet],
   template: `
+    <ng-template #iconTpl>
+      <div class="rail-item-pill">
+          <div class="rail-item-ripple" matRipple></div>
+          <div class="rail-item-icon-wrapper">
+            <div class="rail-item-icon">
+              <ng-content />
+            </div>
+            @if (hasBadge()) {
+              <span class="rail-badge" [class.dot]="isDotBadge()">{{ isDotBadge() ? '' : badge() }}</span>
+            }
+          </div>
+          <span class="rail-item-label label-inline">{{ label() }}</span>
+        </div>
+        <span class="rail-item-label label-below">{{ label() }}</span>
+    </ng-template>
     @if (routerLink()) {
       <a
         class="rail-item"
@@ -16,19 +32,7 @@ import { RailnavComponent } from './railnav.component';
         [routerLink]="routerLink()"
         routerLinkActive="active"
         (click)="onRouterLinkClick()">
-        <div class="rail-item-pill">
-          <div class="rail-item-ripple" matRipple></div>
-          <div class="rail-item-icon-wrapper">
-            <div class="rail-item-icon">
-              <ng-content />
-            </div>
-            @if (hasBadge()) {
-              <span class="rail-badge" [class.dot]="isDotBadge()">{{ isDotBadge() ? '' : badge() }}</span>
-            }
-          </div>
-          <span class="rail-item-label label-inline">{{ label() }}</span>
-        </div>
-        <span class="rail-item-label label-below">{{ label() }}</span>
+        <ng-container [ngTemplateOutlet]="iconTpl" />
       </a>
     } @else {
       <button
@@ -38,19 +42,7 @@ import { RailnavComponent } from './railnav.component';
         [class.position-end]="position() === 'end'"
         [class.active]="active()"
         (click)="onItemClick()">
-        <div class="rail-item-pill">
-          <div class="rail-item-ripple" matRipple></div>
-          <div class="rail-item-icon-wrapper">
-            <div class="rail-item-icon">
-              <ng-content />
-            </div>
-            @if (hasBadge()) {
-              <span class="rail-badge" [class.dot]="isDotBadge()">{{ isDotBadge() ? '' : badge() }}</span>
-            }
-          </div>
-          <span class="rail-item-label label-inline">{{ label() }}</span>
-        </div>
-        <span class="rail-item-label label-below">{{ label() }}</span>
+        <ng-container [ngTemplateOutlet]="iconTpl" />
       </button>
     }
   `,
