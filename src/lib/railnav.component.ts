@@ -35,7 +35,9 @@ import { NgTemplateOutlet } from '@angular/common';
         }
       </div>
     }
-    <ng-content />
+    <nav class="rail-items">
+      <ng-content />
+    </nav>
   `,
   styles: [`
     :host {
@@ -89,6 +91,13 @@ import { NgTemplateOutlet } from '@angular/common';
 
     .rail-header:hover {
       background: var(--rail-nav-surface-container-high, var(--mat-sys-surface-container-high));
+    }
+
+    .rail-items {
+      display: flex;
+      flex-direction: column;
+      padding: 12px 12px 4px;
+      gap: 0;
     }
 
     .rail-burger {
