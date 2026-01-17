@@ -98,6 +98,8 @@ import { NgTemplateOutlet } from '@angular/common';
       flex-direction: column;
       padding: 12px 12px 4px;
       gap: 0;
+      box-sizing: border-box;
+      width: 100%;
     }
 
     .rail-burger {
