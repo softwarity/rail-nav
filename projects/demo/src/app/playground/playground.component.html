@@ -20,14 +20,20 @@
   <!-- Interactive HTML Code -->
   <interactive-code language="html">
     <textarea><rail-nav-container [showBackdrop]="${hasBackdrop}">
-  <rail-nav [position]="'${position}'" [autoCollapse]="${autoCollapse}" title="${title}" subtitle="Rail Nav">
+  <rail-nav [position]="'${position}'" [autoCollapse]="${autoCollapse}" ${title}="Softwarity" ${subtitle}="Rail nav">
+    ${useCustomBranding}<div railNavBranding class="my-branding">
+      <img src="logo.svg" alt="Logo">
+      <span>Softwarity</span>
+    </div>${/useCustomBranding}
     <rail-nav-item label="Home" [badge]="${homeBadge}"><mat-icon>home</mat-icon></rail-nav-item>
     <rail-nav-item label="Favorites" [badge]="${favoritesDot}"><mat-icon>favorite</mat-icon></rail-nav-item>
     <rail-nav-item label="Settings" routerLink="/settings"><mat-icon>settings</mat-icon></rail-nav-item>
   </rail-nav>
   <rail-nav-content><!-- auto-detects position & width --></rail-nav-content>
 </rail-nav-container></textarea>
-    <code-binding key="title" type="string" [value]="title()" (change)="title.set($any($event).detail)"></code-binding>
+    <code-binding key="useCustomBranding" type="comment" [value]="useCustomBranding()" (change)="useCustomBranding.set($any($event).detail)"></code-binding>
+    <code-binding key="title" type="attribute" [value]="useTitle()" (change)="useTitle.set($any($event).detail)"></code-binding>
+    <code-binding key="subtitle" type="attribute" [value]="useSubtitle()" (change)="useSubtitle.set($any($event).detail)"></code-binding>
     <code-binding key="hasBackdrop" type="boolean" [value]="hasBackdrop()" (change)="hasBackdrop.set($any($event).detail)"></code-binding>
     <code-binding key="position" type="select" options="start,end" [value]="position()" (change)="position.set($any($event).detail)"></code-binding>
     <code-binding key="autoCollapse" type="boolean" [value]="autoCollapse()" (change)="autoCollapse.set($any($event).detail)"></code-binding>
@@ -39,7 +45,14 @@
   <div class="preview-wrapper">
     <div class="preview-area rail-preview" #previewArea>
       <rail-nav-container [showBackdrop]="hasBackdrop()">
-        <rail-nav #railnav [position]="position()" [autoCollapse]="autoCollapse()" [title]="title()" subtitle="Rail Nav">
+        <rail-nav #railnav [position]="position()" [autoCollapse]="autoCollapse()" [title]="useTitle() ? 'Softwarity' : undefined" [subtitle]="useSubtitle() ? 'Rail Nav' : undefined">
+          <!-- Custom branding (shown when useCustomBranding is true) -->
+          @if (useCustomBranding()) {
+            <div railNavBranding class="demo-branding">
+              <img src="https://www.softwarity.io/img/softwarity.svg" alt="Logo" class="branding-logo">
+              <span class="branding-title">Softwarity</span>
+            </div>
+          }
           @for (item of navItems; track item.id) {
             <rail-nav-item
               [label]="item.label"
@@ -94,9 +107,15 @@ html {
     ${expandedWidthEnabled}expanded-width: ${expandedWidth}px,
     ${headerHeightEnabled}header-height: ${headerHeight}px,
     ${surfaceEnabled}surface-color: light-dark(${surfaceLight}, ${surfaceDark}),
+    ${surfaceContainerHighEnabled}surface-container-high: light-dark(${surfaceContainerHighLight}, ${surfaceContainerHighDark}),
+    ${onSurfaceEnabled}on-surface: light-dark(${onSurfaceLight}, ${onSurfaceDark}),
+    ${onSurfaceVariantEnabled}on-surface-variant: light-dark(${onSurfaceVariantLight}, ${onSurfaceVariantDark}),
     ${backdropEnabled}backdrop-color: light-dark(${backdropLight}, ${backdropDark}),
     ${primaryEnabled}primary: light-dark(${primaryLight}, ${primaryDark}),
-    ${secondaryContainerEnabled}secondary-container: light-dark(${secondaryContainerLight}, ${secondaryContainerDark})
+    ${secondaryContainerEnabled}secondary-container: light-dark(${secondaryContainerLight}, ${secondaryContainerDark}),
+    ${onSecondaryContainerEnabled}on-secondary-container: light-dark(${onSecondaryContainerLight}, ${onSecondaryContainerDark}),
+    ${errorEnabled}error: light-dark(${errorLight}, ${errorDark}),
+    ${onErrorEnabled}on-error: light-dark(${onErrorLight}, ${onErrorDark})
   ));
 }</textarea>
     <!-- Size overrides -->
@@ -106,18 +125,41 @@ html {
     <code-binding key="expandedWidth" type="number" min="150" max="400" step="10" [value]="expandedWidth()" (change)="expandedWidth.set($any($event).detail)" [disabled]="!expandedWidthEnabled()"></code-binding>
     <code-binding key="headerHeightEnabled" type="comment" [value]="headerHeightEnabled()" (change)="headerHeightEnabled.set($any($event).detail)"></code-binding>
     <code-binding key="headerHeight" type="number" min="40" max="80" step="4" [value]="headerHeight()" (change)="headerHeight.set($any($event).detail)" [disabled]="!headerHeightEnabled()"></code-binding>
-    <!-- Color overrides -->
+    <!-- Surface colors -->
     <code-binding key="surfaceEnabled" type="comment" [value]="surfaceEnabled()" (change)="surfaceEnabled.set($any($event).detail)"></code-binding>
     <code-binding key="surfaceLight" type="color" [value]="surfaceLight()" (change)="surfaceLight.set($any($event).detail)" [disabled]="!surfaceEnabled()"></code-binding>
     <code-binding key="surfaceDark" type="color" [value]="surfaceDark()" (change)="surfaceDark.set($any($event).detail)" [disabled]="!surfaceEnabled()"></code-binding>
+    <code-binding key="surfaceContainerHighEnabled" type="comment" [value]="surfaceContainerHighEnabled()" (change)="surfaceContainerHighEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="surfaceContainerHighLight" type="color" [value]="surfaceContainerHighLight()" (change)="surfaceContainerHighLight.set($any($event).detail)" [disabled]="!surfaceContainerHighEnabled()"></code-binding>
+    <code-binding key="surfaceContainerHighDark" type="color" [value]="surfaceContainerHighDark()" (change)="surfaceContainerHighDark.set($any($event).detail)" [disabled]="!surfaceContainerHighEnabled()"></code-binding>
+    <!-- Text colors -->
+    <code-binding key="onSurfaceEnabled" type="comment" [value]="onSurfaceEnabled()" (change)="onSurfaceEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="onSurfaceLight" type="color" [value]="onSurfaceLight()" (change)="onSurfaceLight.set($any($event).detail)" [disabled]="!onSurfaceEnabled()"></code-binding>
+    <code-binding key="onSurfaceDark" type="color" [value]="onSurfaceDark()" (change)="onSurfaceDark.set($any($event).detail)" [disabled]="!onSurfaceEnabled()"></code-binding>
+    <code-binding key="onSurfaceVariantEnabled" type="comment" [value]="onSurfaceVariantEnabled()" (change)="onSurfaceVariantEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="onSurfaceVariantLight" type="color" [value]="onSurfaceVariantLight()" (change)="onSurfaceVariantLight.set($any($event).detail)" [disabled]="!onSurfaceVariantEnabled()"></code-binding>
+    <code-binding key="onSurfaceVariantDark" type="color" [value]="onSurfaceVariantDark()" (change)="onSurfaceVariantDark.set($any($event).detail)" [disabled]="!onSurfaceVariantEnabled()"></code-binding>
+    <!-- Backdrop -->
     <code-binding key="backdropEnabled" type="comment" [value]="backdropEnabled()" (change)="backdropEnabled.set($any($event).detail)"></code-binding>
     <code-binding key="backdropLight" type="color" [value]="backdropLight()" (change)="backdropLight.set($any($event).detail)" [disabled]="!backdropEnabled()"></code-binding>
     <code-binding key="backdropDark" type="color" [value]="backdropDark()" (change)="backdropDark.set($any($event).detail)" [disabled]="!backdropEnabled()"></code-binding>
+    <!-- Primary -->
     <code-binding key="primaryEnabled" type="comment" [value]="primaryEnabled()" (change)="primaryEnabled.set($any($event).detail)"></code-binding>
     <code-binding key="primaryLight" type="color" [value]="primaryLight()" (change)="primaryLight.set($any($event).detail)" [disabled]="!primaryEnabled()"></code-binding>
     <code-binding key="primaryDark" type="color" [value]="primaryDark()" (change)="primaryDark.set($any($event).detail)" [disabled]="!primaryEnabled()"></code-binding>
+    <!-- Secondary container (active item) -->
     <code-binding key="secondaryContainerEnabled" type="comment" [value]="secondaryContainerEnabled()" (change)="secondaryContainerEnabled.set($any($event).detail)"></code-binding>
     <code-binding key="secondaryContainerLight" type="color" [value]="secondaryContainerLight()" (change)="secondaryContainerLight.set($any($event).detail)" [disabled]="!secondaryContainerEnabled()"></code-binding>
     <code-binding key="secondaryContainerDark" type="color" [value]="secondaryContainerDark()" (change)="secondaryContainerDark.set($any($event).detail)" [disabled]="!secondaryContainerEnabled()"></code-binding>
+    <code-binding key="onSecondaryContainerEnabled" type="comment" [value]="onSecondaryContainerEnabled()" (change)="onSecondaryContainerEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="onSecondaryContainerLight" type="color" [value]="onSecondaryContainerLight()" (change)="onSecondaryContainerLight.set($any($event).detail)" [disabled]="!onSecondaryContainerEnabled()"></code-binding>
+    <code-binding key="onSecondaryContainerDark" type="color" [value]="onSecondaryContainerDark()" (change)="onSecondaryContainerDark.set($any($event).detail)" [disabled]="!onSecondaryContainerEnabled()"></code-binding>
+    <!-- Badge colors -->
+    <code-binding key="errorEnabled" type="comment" [value]="errorEnabled()" (change)="errorEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="errorLight" type="color" [value]="errorLight()" (change)="errorLight.set($any($event).detail)" [disabled]="!errorEnabled()"></code-binding>
+    <code-binding key="errorDark" type="color" [value]="errorDark()" (change)="errorDark.set($any($event).detail)" [disabled]="!errorEnabled()"></code-binding>
+    <code-binding key="onErrorEnabled" type="comment" [value]="onErrorEnabled()" (change)="onErrorEnabled.set($any($event).detail)"></code-binding>
+    <code-binding key="onErrorLight" type="color" [value]="onErrorLight()" (change)="onErrorLight.set($any($event).detail)" [disabled]="!onErrorEnabled()"></code-binding>
+    <code-binding key="onErrorDark" type="color" [value]="onErrorDark()" (change)="onErrorDark.set($any($event).detail)" [disabled]="!onErrorEnabled()"></code-binding>
   </interactive-code>
 </section>

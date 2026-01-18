@@ -8,7 +8,8 @@ import {
   RailnavComponent,
   RailnavContainerComponent,
   RailnavContentComponent,
-  RailnavItemComponent
+  RailnavItemComponent,
+  RailnavBrandingDirective
 } from '@softwarity/rail-nav';
 // Register interactive-code custom elements
 import { registerInteractiveCode } from '@softwarity/interactive-code';
@@ -29,7 +30,8 @@ const PALETTES = [
     RailnavComponent,
     RailnavContainerComponent,
     RailnavContentComponent,
-    RailnavItemComponent
+    RailnavItemComponent,
+    RailnavBrandingDirective
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './playground.component.html',
@@ -38,7 +40,6 @@ const PALETTES = [
 export class PlaygroundComponent {
   // Basic demo signals
   protected isDarkMode = signal(document.body.classList.contains('dark-mode'));
-  protected title = signal('Softwarity');
   protected hasBackdrop = signal(true);
   protected position = signal<'start' | 'end'>('start');
   protected autoCollapse = signal(true);
@@ -46,6 +47,11 @@ export class PlaygroundComponent {
   protected homeBadge = signal(3);
   protected favoritesDot = signal(true);
   protected selectedPalette = signal('violet');
+
+  // Branding options (comment toggles)
+  protected useCustomBranding = signal(true);
+  protected useTitle = signal(false);
+  protected useSubtitle = signal(false);
 
   // Size overrides
   protected collapsedWidthEnabled = signal(false);
@@ -56,18 +62,42 @@ export class PlaygroundComponent {
   protected headerHeight = signal(56);
 
   // Color overrides - separate light/dark signals
+  // Surface colors
   protected surfaceEnabled = signal(false);
-  protected surfaceLight = signal('#ffffff');
-  protected surfaceDark = signal('#1e1e1e');
+  protected surfaceLight = signal('#fff8e1');  // Warm cream
+  protected surfaceDark = signal('#1a237e');   // Deep indigo
+  protected surfaceContainerHighEnabled = signal(false);
+  protected surfaceContainerHighLight = signal('#ffe082');  // Amber
+  protected surfaceContainerHighDark = signal('#303f9f');   // Indigo
+  // Text colors
+  protected onSurfaceEnabled = signal(false);
+  protected onSurfaceLight = signal('#bf360c');   // Deep orange
+  protected onSurfaceDark = signal('#ffeb3b');    // Yellow
+  protected onSurfaceVariantEnabled = signal(false);
+  protected onSurfaceVariantLight = signal('#6a1b9a');  // Purple
+  protected onSurfaceVariantDark = signal('#ce93d8');   // Light purple
+  // Backdrop
   protected backdropEnabled = signal(false);
-  protected backdropLight = signal('#00000066');
-  protected backdropDark = signal('#00000099');
+  protected backdropLight = signal('#ff572280');  // Orange transparent
+  protected backdropDark = signal('#7c4dff80');   // Purple transparent
+  // Primary (focus ring)
   protected primaryEnabled = signal(false);
-  protected primaryLight = signal('#6750a4');
-  protected primaryDark = signal('#d0bcff');
+  protected primaryLight = signal('#d32f2f');  // Red
+  protected primaryDark = signal('#ff5252');   // Bright red
+  // Secondary container (active item)
   protected secondaryContainerEnabled = signal(false);
-  protected secondaryContainerLight = signal('#e8def8');
-  protected secondaryContainerDark = signal('#4a4458');
+  protected secondaryContainerLight = signal('#c8e6c9');  // Light green
+  protected secondaryContainerDark = signal('#2e7d32');   // Green
+  protected onSecondaryContainerEnabled = signal(false);
+  protected onSecondaryContainerLight = signal('#1b5e20');  // Dark green
+  protected onSecondaryContainerDark = signal('#a5d6a7');   // Light green
+  // Badge colors
+  protected errorEnabled = signal(false);
+  protected errorLight = signal('#e91e63');   // Pink
+  protected errorDark = signal('#f48fb1');    // Light pink
+  protected onErrorEnabled = signal(false);
+  protected onErrorLight = signal('#ffffff'); // White
+  protected onErrorDark = signal('#880e4f');  // Dark pink
 
   // Preview area reference for applying CSS variables
   protected previewArea = viewChild<ElementRef<HTMLElement>>('previewArea');
@@ -143,6 +173,42 @@ export class PlaygroundComponent {
         preview.style.setProperty('--rail-nav-secondary-container', `light-dark(${this.secondaryContainerLight()}, ${this.secondaryContainerDark()})`);
       } else {
         preview.style.removeProperty('--rail-nav-secondary-container');
+      }
+
+      if (this.surfaceContainerHighEnabled()) {
+        preview.style.setProperty('--rail-nav-surface-container-high', `light-dark(${this.surfaceContainerHighLight()}, ${this.surfaceContainerHighDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-surface-container-high');
+      }
+
+      if (this.onSurfaceEnabled()) {
+        preview.style.setProperty('--rail-nav-on-surface', `light-dark(${this.onSurfaceLight()}, ${this.onSurfaceDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-on-surface');
+      }
+
+      if (this.onSurfaceVariantEnabled()) {
+        preview.style.setProperty('--rail-nav-on-surface-variant', `light-dark(${this.onSurfaceVariantLight()}, ${this.onSurfaceVariantDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-on-surface-variant');
+      }
+
+      if (this.onSecondaryContainerEnabled()) {
+        preview.style.setProperty('--rail-nav-on-secondary-container', `light-dark(${this.onSecondaryContainerLight()}, ${this.onSecondaryContainerDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-on-secondary-container');
+      }
+
+      if (this.errorEnabled()) {
+        preview.style.setProperty('--rail-nav-error', `light-dark(${this.errorLight()}, ${this.errorDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-error');
+      }
+
+      if (this.onErrorEnabled()) {
+        preview.style.setProperty('--rail-nav-on-error', `light-dark(${this.onErrorLight()}, ${this.onErrorDark()})`);
+      } else {
+        preview.style.removeProperty('--rail-nav-on-error');
       }
     });
   }

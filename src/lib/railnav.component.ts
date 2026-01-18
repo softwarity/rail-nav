@@ -1,13 +1,20 @@
-import { Component, signal, effect, input } from '@angular/core';
+import { Component, signal, effect, input, contentChild, ElementRef, Directive, computed } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatRippleModule } from '@angular/material/core';
 import { NgTemplateOutlet } from '@angular/common';
+
+/** Directive to mark custom branding content */
+@Directive({
+  selector: '[railNavBranding]'
+})
+export class RailnavBrandingDirective {}
 
 @Component({
   selector: 'rail-nav',
   imports: [MatRippleModule, NgTemplateOutlet],
   template: `
-    <ng-template #brandingTpl>
+    <!-- Default branding template (title/subtitle) -->
+    <ng-template #defaultBrandingTpl>
       <div class="rail-branding" [class.position-end]="railPosition() === 'end'">
         @if (title()) {
           <span class="rail-title">{{ title() }}</span>
@@ -17,10 +24,16 @@ import { NgTemplateOutlet } from '@angular/common';
         }
       </div>
     </ng-template>
+    <!-- Custom branding template (projected content) -->
+    <ng-template #customBrandingTpl>
+      <div class="rail-branding rail-branding-custom" [class.position-end]="railPosition() === 'end'">
+        <ng-content select="[railNavBranding]" />
+      </div>
+    </ng-template>
     @if (!hideDefaultHeader()) {
       <div class="rail-header" [class.position-end]="railPosition() === 'end'" matRipple (click)="toggleExpanded()">
-        @if (expanded() && (title() || subtitle()) && railPosition() === 'end') {
-          <ng-container [ngTemplateOutlet]="brandingTpl" />
+        @if (expanded() && hasBranding() && railPosition() === 'end') {
+          <ng-container [ngTemplateOutlet]="customBranding() ? customBrandingTpl : defaultBrandingTpl" />
         }
         <div class="rail-burger" [class.expanded]="expanded()" [class.position-end]="railPosition() === 'end'">
           <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
@@ -30,8 +43,8 @@ import { NgTemplateOutlet } from '@angular/common';
             <path d="M120-240v-80h520v80H120Zm664-40L584-480l200-200 56 56-144 144 144 144-56 56ZM120-440v-80h400v80H120Zm0-200v-80h520v80H120Z"/>
           </svg>
         </div>
-        @if (expanded() && (title() || subtitle()) && railPosition() === 'start') {
-          <ng-container [ngTemplateOutlet]="brandingTpl" />
+        @if (expanded() && hasBranding() && railPosition() === 'start') {
+          <ng-container [ngTemplateOutlet]="customBranding() ? customBrandingTpl : defaultBrandingTpl" />
         }
       </div>
     }
@@ -205,10 +218,10 @@ export class RailnavComponent extends MatSidenav {
   /** Hide the default header (burger + title/subtitle) */
   readonly hideDefaultHeader = input(false);
 
-  /** Title displayed when expanded */
+  /** Title displayed when expanded (ignored if railNavBranding is projected) */
   readonly title = input<string>();
 
-  /** Subtitle displayed when expanded */
+  /** Subtitle displayed when expanded (ignored if railNavBranding is projected) */
   readonly subtitle = input<string>();
 
   /** Whether to auto-collapse when an item is clicked */
@@ -216,6 +229,14 @@ export class RailnavComponent extends MatSidenav {
 
   /** Whether the rail is expanded to show labels */
   readonly expanded = signal(false);
+
+  /** Detect custom branding content projection */
+  protected readonly customBranding = contentChild(RailnavBrandingDirective);
+
+  /** Whether there's any branding to show (custom or default) */
+  protected readonly hasBranding = computed(() =>
+    !!this.customBranding() || !!this.title() || !!this.subtitle()
+  );
 
   constructor() {
     super();

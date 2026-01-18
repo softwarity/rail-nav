@@ -17,11 +17,12 @@
       <textarea>import {
   RailnavComponent,
   RailnavContainerComponent,
-  RailnavContentComponent
+  RailnavContentComponent,
+  RailnavBrandingDirective // Optional: for custom branding
 } from '@softwarity/rail-nav';
 
 @Component({
-  imports: [RailnavComponent, RailnavContainerComponent, RailnavContentComponent],
+  imports: [RailnavComponent, RailnavContainerComponent, RailnavContentComponent, RailnavBrandingDirective],
   templateUrl: './app.component.html'
 })
 export class AppComponent {}</textarea>
@@ -65,13 +66,13 @@ export class AppComponent {}</textarea>
             <td><code>title</code></td>
             <td><code>string</code></td>
             <td><code>undefined</code></td>
-            <td>Title displayed next to burger when expanded</td>
+            <td>Title displayed next to burger when expanded (ignored if <code>railNavBranding</code> is used)</td>
           </tr>
           <tr>
             <td><code>subtitle</code></td>
             <td><code>string</code></td>
             <td><code>undefined</code></td>
-            <td>Subtitle displayed below title when expanded</td>
+            <td>Subtitle displayed below title when expanded (ignored if <code>railNavBranding</code> is used)</td>
           </tr>
           <tr>
             <td><code>hideDefaultHeader</code></td>
@@ -123,6 +124,20 @@ export class AppComponent {}</textarea>
         </tbody>
       </table>
     </div>
+
+    <h4>Custom Branding</h4>
+    <p>Use the <code>railNavBranding</code> directive to project custom content in the header area instead of using <code>title</code> and <code>subtitle</code> inputs:</p>
+    <interactive-code language="html">
+      <textarea><rail-nav>
+  <!-- Custom branding replaces title/subtitle -->
+  <div railNavBranding class="my-branding">
+    <img src="logo.svg" alt="Logo">
+    <span>My App</span>
+  </div>
+  <!-- Navigation items -->
+</rail-nav></textarea>
+    </interactive-code>
+    <p><strong>Note:</strong> The burger icon is always displayed. Only the branding area (title/subtitle) is replaced by your custom content.</p>
   </article>
 
   <!-- API - RailnavContainerComponent -->
@@ -266,7 +281,7 @@ export class AppComponent {}</textarea>
     <ul class="feature-list">
       <li><strong>Material Design 3</strong> - Implements the Navigation Rail pattern from MD3</li>
       <li><strong>Animated Burger</strong> - Built-in burger icon with 90° rotation animation</li>
-      <li><strong>Title & Subtitle</strong> - Optional branding next to the burger</li>
+      <li><strong>Title & Subtitle</strong> - Optional branding next to the burger, or use <code>railNavBranding</code> for custom content</li>
       <li><strong>Navigation Items</strong> - <code>rail-nav-item</code> with MD3 pill animation, badges, and router support</li>
       <li><strong>Extends Material</strong> - Built on top of <code>MatSidenav</code> for reliability</li>
       <li><strong>Expand/Collapse</strong> - Smooth transition between rail and drawer with adaptive width</li>

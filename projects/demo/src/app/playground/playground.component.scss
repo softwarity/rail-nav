@@ -154,3 +154,23 @@ mat-toolbar {
     border-radius: 4px;
   }
 }
+
+// Custom branding styles for demo
+.demo-branding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .branding-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .branding-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--rail-nav-on-surface, var(--mat-sys-on-surface));
+    white-space: nowrap;
+  }
+}
