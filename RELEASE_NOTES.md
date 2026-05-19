@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.0.18
+
+---
+
 ## 1.1.0
 
 ### Features
