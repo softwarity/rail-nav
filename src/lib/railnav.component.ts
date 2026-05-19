@@ -2,6 +2,7 @@ import { Component, signal, effect, input, contentChild, ElementRef, Directive, 
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatRippleModule } from '@angular/material/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { RailnavDrawerOrchestrator } from './railnav-drawer.orchestrator';
 
 /** Directive to mark custom branding content */
 @Directive({
@@ -54,7 +55,10 @@ export class RailnavBrandingDirective {}
   `,
   styles: [`
     :host {
-      display: block;
+      /* flex column so .rail-items can stretch (flex: 1) and */
+      /* rail-nav-spacer inside it can push siblings to the bottom. */
+      display: flex;
+      flex-direction: column;
       position: absolute;
       top: 0;
       bottom: 0;
@@ -67,11 +71,18 @@ export class RailnavBrandingDirective {}
       background: var(--rail-nav-surface-color, var(--mat-sys-surface));
       transition: width 0.2s ease;
       overflow: visible;
+
+      /* Collapsed default: rail items show their label-below (~20px) but */
+      /* the next pill keeps its margin-top, so the inter-item gap is */
+      /* asymmetric. Shift the separator down to recenter it visually. */
+      --rail-nav-separator-shift: 12px;
     }
 
     :host(.expanded) {
       width: var(--rail-nav-expanded-width, fit-content);
       box-shadow: 4px 0 8px rgba(0,0,0,.2);
+      /* Expanded mode has no label-below, items are flush. No shift needed. */
+      --rail-nav-separator-shift: 0;
     }
 
     :host(.position-end) {
@@ -109,7 +120,11 @@ export class RailnavBrandingDirective {}
     .rail-items {
       display: flex;
       flex-direction: column;
-      padding: 12px 12px 4px;
+      flex: 1 1 auto;
+      min-height: 0;
+      /* Symmetric vertical padding so the last item (typically Settings */
+      /* anchored via <rail-nav-spacer/>) breathes against the rail edge. */
+      padding: 12px;
       gap: 0;
       box-sizing: border-box;
       width: 100%;
@@ -209,7 +224,8 @@ export class RailnavBrandingDirective {}
     'class': 'mat-drawer mat-sidenav',
     '[class.expanded]': 'expanded()',
     '[class.position-end]': 'railPosition() === "end"'
-  }
+  },
+  providers: [RailnavDrawerOrchestrator]
 })
 export class RailnavComponent extends MatSidenav {
   /** Position: 'start' (left) or 'end' (right) - aliased to avoid conflict with MatSidenav.position */

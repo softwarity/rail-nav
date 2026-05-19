@@ -162,4 +162,14 @@ html {
     <code-binding key="onErrorLight" type="color" [value]="onErrorLight()" (change)="onErrorLight.set($any($event).detail)" [disabled]="!onErrorEnabled()"></code-binding>
     <code-binding key="onErrorDark" type="color" [value]="onErrorDark()" (change)="onErrorDark.set($any($event).detail)" [disabled]="!onErrorEnabled()"></code-binding>
   </interactive-code>
+
+  <!-- v1.1.0 contextual drawer pattern: <rail-nav-item [for]> + <rail-nav-drawer> -->
+  <h3 class="section-heading">Contextual drawer</h3>
+  <p class="section-intro">
+    A rail item can declare <code>[for]="myDrawer"</code> pointing to a
+    <code>&lt;rail-nav-drawer&gt;</code>. The library handles overlay positioning,
+    slide animation, hover-intent, close debounce and auto-close when the rail
+    is expanded — same ergonomics as <code>matMenu</code> / <code>matDatepicker</code>.
+  </p>
+  <hover-drawer-demo />
 </section>

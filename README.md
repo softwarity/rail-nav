@@ -137,10 +137,92 @@ Navigation item with MD3 pill animation.
 | `label` | `string` | - | Label text (below icon when collapsed, beside when expanded) |
 | `badge` | `string \| number \| boolean` | - | Badge value. Use `true` for a small dot badge |
 | `active` | `boolean` | `false` | Whether this item is active (for non-router usage) |
+| `for` | `TemplateRef \| null` | `null` | Template projected as a contextual drawer when the item is hovered or clicked. Aliased to `for` for `mat-datepicker-toggle`-style ergonomics. See [Contextual drawer](#contextual-drawer). |
 
 | Output | Type | Description |
 |--------|------|-------------|
 | `itemClick` | `void` | Emitted when clicked (automatically collapses rail) |
+
+### RailnavSeparatorComponent
+
+Visual separator between groups of `<rail-nav-item>`. Hairline 1px rule, vertically centered in a fixed-height host so the spacing stays consistent across collapsed / expanded modes.
+
+```html
+<rail-nav>
+  <rail-nav-item label="Home">...</rail-nav-item>
+  <rail-nav-separator />
+  <rail-nav-item label="Trash">...</rail-nav-item>
+</rail-nav>
+```
+
+Color overridable via `--rail-nav-separator-color`.
+
+### RailnavSpacerComponent
+
+Flexible spacer (`flex: 1 1 auto`). Place between two groups of items to push everything after it to the bottom of the rail — the classic pattern for primary nav on top and Settings / Profile anchored at the bottom.
+
+```html
+<rail-nav>
+  <rail-nav-item label="Home">...</rail-nav-item>
+  <rail-nav-item label="Inbox">...</rail-nav-item>
+  <rail-nav-spacer />
+  <rail-nav-item label="Settings">...</rail-nav-item>
+</rail-nav>
+```
+
+## Contextual drawer
+
+Any rail item can declare a contextual side drawer with `[for]="someTemplate"`. The library renders the template in a CDK overlay positioned right next to the rail, handles hover-intent (200ms), close debounce (300ms for cursor transit), outside-tap dismiss, auto-close when the rail is expanded, and re-targets the same overlay when the cursor moves between trigger items.
+
+```ts
+import {
+  RailnavComponent,
+  RailnavContainerComponent,
+  RailnavContentComponent,
+  RailnavItemComponent,
+} from '@softwarity/rail-nav';
+
+@Component({
+  imports: [
+    RailnavComponent,
+    RailnavContainerComponent,
+    RailnavContentComponent,
+    RailnavItemComponent,
+  ],
+  template: `
+    <rail-nav-container>
+      <rail-nav>
+        <rail-nav-item label="Workspaces" [for]="wsTpl">
+          <mat-icon>workspaces</mat-icon>
+        </rail-nav-item>
+      </rail-nav>
+      <rail-nav-content>...</rail-nav-content>
+    </rail-nav-container>
+
+    <ng-template #wsTpl>
+      <a routerLink="/ws/1">Workspace 1</a>
+      <a routerLink="/ws/2">Workspace 2</a>
+    </ng-template>
+  `,
+})
+export class AppComponent {}
+```
+
+The drawer panel applies its own chrome (background, shadow, rounded right corner) and a default nav-list layout (flex column, padding, gap, fixed width) — your template only needs the children. Both desktop hover and mobile tap open the drawer; the lib swallows the synthetic mouse events touch devices fire after a tap so the drawer doesn't close instantly.
+
+### Drawer CSS custom properties
+
+Override per rail (or globally) — all read with sane Material defaults as fallback.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--rail-nav-drawer-width` | `240px` | Fixed drawer width |
+| `--rail-nav-drawer-padding` | `12px` | Inner padding |
+| `--rail-nav-drawer-gap` | `4px` | Vertical gap between children |
+| `--rail-nav-drawer-surface` | `var(--mat-sys-surface)` | Background color |
+| `--rail-nav-drawer-on-surface` | `var(--mat-sys-on-surface)` | Text color |
+| `--rail-nav-drawer-shadow` | `var(--mat-sys-level2)` | Elevation |
+| `--rail-nav-drawer-radius` | `0 12px 12px 0` | Outer border-radius |
 
 ## SCSS Theming
 

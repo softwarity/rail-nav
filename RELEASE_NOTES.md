@@ -1,6 +1,27 @@
 # Release Notes
 
-## 1.0.17
+## 1.1.0
+
+### Features
+
+- **Contextual drawer pattern** (`<rail-nav-drawer>` + `[for]` on items):
+  - New `RailnavDrawerComponent` — declared anywhere in the host template, it holds the contextual content as an `<ng-template>`.
+  - `RailnavItemComponent` gains a `for` input (aliased to match `mat-datepicker-toggle`):
+    ```html
+    <rail-nav-item label="Workspaces" [for]="wsDrawer">
+      <mat-icon>workspaces</mat-icon>
+    </rail-nav-item>
+    <rail-nav-drawer #wsDrawer>
+      <a routerLink="/ws/1">Workspace 1</a>
+    </rail-nav-drawer>
+    ```
+  - The library handles **everything** consumers used to wire by hand:
+    - CDK overlay rendering positioned next to the rail
+    - Hover-intent (200 ms delay before opening, cancelled if the cursor leaves first)
+    - Close debounce (300 ms after `mouseleave` on trigger or drawer, cancelled if the cursor comes back)
+    - Mutual exclusion with the rail's expanded mode (no drawer stacks on top of the expanded rail; expanding closes any open drawer)
+    - Single overlay reused across triggers — switching trigger items re-targets without flicker
+  - Consumer-side code is now just two bindings — no signals, no timers, no `mouseenter`/`mouseleave` handlers.
 
 ---
 
@@ -100,5 +121,3 @@
 - Added RailnavItemComponent API documentation
 
 ---
-
-

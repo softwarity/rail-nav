@@ -1,0 +1,98 @@
+<div class="hover-demo">
+  <rail-nav-container>
+    <rail-nav>
+      <rail-nav-item label="Home">
+        <mat-icon>home</mat-icon>
+      </rail-nav-item>
+
+      <rail-nav-separator />
+
+      <!-- Two triggers — moving the cursor from one to the other re-targets
+           the single overlay (no close + reopen flicker). -->
+      <rail-nav-item label="Workspaces" [for]="wsTpl">
+        <mat-icon>workspaces</mat-icon>
+      </rail-nav-item>
+
+      <rail-nav-item label="Recent" [for]="recentTpl">
+        <mat-icon>history</mat-icon>
+      </rail-nav-item>
+
+      <!-- Pushes everything below to the bottom of the rail. -->
+      <rail-nav-spacer />
+
+      <rail-nav-item label="Settings">
+        <mat-icon>settings</mat-icon>
+      </rail-nav-item>
+    </rail-nav>
+
+    <rail-nav-content>
+      <div class="demo-stage">
+        <div class="stage-header">
+          <h4>Hover <code>Workspaces</code> or <code>Recent</code></h4>
+          <span class="selected">
+            Selected: <code>{{ selected() ?? "none" }}</code>
+          </span>
+        </div>
+
+        <ol class="steps">
+          <li>
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <h5>Wire the trigger</h5>
+              <pre><code>&lt;rail-nav-item label="Workspaces" [for]="wsTpl"&gt;
+  &lt;mat-icon&gt;workspaces&lt;/mat-icon&gt;
+&lt;/rail-nav-item&gt;</code></pre>
+            </div>
+          </li>
+
+          <li>
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <h5>Declare the template (anywhere in the host template)</h5>
+              <pre><code>&lt;ng-template #wsTpl&gt;
+  &lt;a routerLink="/ws/1"&gt;Workspace 1&lt;/a&gt;
+  &lt;a routerLink="/ws/2"&gt;Workspace 2&lt;/a&gt;
+&lt;/ng-template&gt;</code></pre>
+              <p class="step-note">Just project children — the lib applies a flex-column layout on the panel, so they stack with proper spacing. No wrapper, no styling needed.</p>
+            </div>
+          </li>
+        </ol>
+
+        <p class="hint">
+          The lib renders the template in a CDK overlay, applies panel chrome (background, shadow, radius) and a default nav-list layout (flex column, padding, gap, min-width) inline on the overlay element, then handles hover-intent, close debounce, outside-tap dismiss, and auto-closes when the rail is expanded. No signals, timers, wrappers or styles on your side. Override defaults via
+          <code>--rail-nav-drawer-*</code> CSS variables.
+        </p>
+      </div>
+    </rail-nav-content>
+  </rail-nav-container>
+
+  <!-- Drawer templates — the lib portals their content into the overlay,
+       applies the panel chrome (background, shadow, radius) AND a default
+       flex-column layout (padding, gap, min-width), so the template only
+       needs the children. Switching trigger re-uses the same overlay. -->
+  <ng-template #wsTpl>
+    @for (c of channels; track c) {
+      <button
+        matButton="text"
+        style="width: 100%"
+        [class.active]="selected() === c"
+        (click)="selected.set(c)"
+      >
+        {{ c }}
+      </button>
+    }
+  </ng-template>
+
+  <ng-template #recentTpl>
+    @for (r of recents; track r) {
+      <button
+        matButton="text"
+        style="width: 100%"
+        [class.active]="selected() === r"
+        (click)="selected.set(r)"
+      >
+        {{ r }}
+      </button>
+    }
+  </ng-template>
+</div>

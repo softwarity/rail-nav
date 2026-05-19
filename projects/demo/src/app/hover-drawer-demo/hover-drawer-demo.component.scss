@@ -1,0 +1,115 @@
+.hover-demo {
+  position: relative;
+  height: 480px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--mat-sys-surface-container-low);
+}
+
+.demo-stage {
+  height: 100%;
+  overflow: auto;
+  padding: 20px 24px;
+  box-sizing: border-box;
+
+  code {
+    background: var(--mat-sys-surface-container-high);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+}
+
+.stage-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  h4 {
+    margin: 0;
+  }
+
+  .selected {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 13px;
+  }
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.steps li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.step-body {
+  flex: 1;
+  min-width: 0;
+
+  h5 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  pre {
+    margin: 0;
+    padding: 10px 12px;
+    background: var(--mat-sys-surface-container-highest);
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+}
+
+.hint {
+  margin-top: 16px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 13px;
+  font-style: italic;
+}
+
+// `.active` is set on the projected drawer buttons. Even though the buttons
+// are portalised by the CDK overlay (outside the component tree), Angular
+// adds the component's `_ngcontent-*` attribute to elements created from its
+// `<ng-template>`s, so emulated-scoped selectors still match — no need for
+// ::ng-deep or Encapsulation.None.
+.active {
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+

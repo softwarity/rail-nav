@@ -1,7 +1,8 @@
-import { Component, input, output, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, TemplateRef, input, output, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatRippleModule } from '@angular/material/core';
 import { RailnavComponent } from './railnav.component';
+import { RailnavDrawerOrchestrator } from './railnav-drawer.orchestrator';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
@@ -248,7 +249,13 @@ import { NgTemplateOutlet } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.expanded]': 'expanded()',
-    '[class.position-end]': 'position() === "end"'
+    '[class.position-end]': 'position() === "end"',
+    // pointer* events let us filter by pointerType: touch devices emit
+    // synthetic mouseenter/leave around taps, which would arm the close timer
+    // right after a click-to-open and shut the drawer instantly. Hover-intent
+    // only applies for real mouse pointers.
+    '(pointerenter)': 'onHostPointerEnter($event)',
+    '(pointerleave)': 'onHostPointerLeave($event)'
   }
 })
 export class RailnavItemComponent {
@@ -263,6 +270,22 @@ export class RailnavItemComponent {
 
   /** Whether this item is active (for non-router usage) */
   readonly active = input(false);
+
+  /** Template projected as a contextual side panel when the item is hovered
+   * or clicked. Aliased `for` to mirror Material's `mat-datepicker-toggle`
+   * (`<rail-nav-item [for]="myTpl">`). Declare the content as a plain
+   * `<ng-template #myTpl>...</ng-template>` anywhere in the host template.
+   *
+   * When set, the item becomes a trigger; the rail's orchestrator handles
+   * overlay rendering, animation, hover-intent and close timer. The panel
+   * carries the `rail-nav-drawer-panel` class — style it via the theme mixin
+   * `rail-nav.panel()` (or your own global rule). Suppressed while the rail
+   * is `expanded()`. */
+  readonly for = input<TemplateRef<unknown> | null>(null, { alias: 'for' });
+
+  /** Hover-intent delay (ms) before opening the drawer. Cancelled if the
+   * cursor leaves the item first. Click bypasses the delay. */
+  private static readonly ENTER_DELAY_MS = 200;
 
   /** Whether to show a badge */
   protected readonly hasBadge = computed(() => {
@@ -282,24 +305,76 @@ export class RailnavItemComponent {
   /** Reference to parent rail-nav */
   private railnav = inject(RailnavComponent);
 
+  /** Owned by the parent rail (one orchestrator per rail). null in tests where
+   * the item is rendered outside a real rail. */
+  private orchestrator = inject(RailnavDrawerOrchestrator, { optional: true });
+
+  /** Pending hover-intent timer, cleared on leave or destroy. */
+  private enterTimeout?: ReturnType<typeof setTimeout>;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.clearEnterTimeout());
+  }
+
   /** Whether the rail is expanded */
   protected expanded = computed(() => this.railnav.expanded());
 
   /** Position of the rail (start or end) */
   protected position = computed(() => this.railnav.railPosition());
 
-  /** Handle item click - emit event and optionally collapse rail */
+  /** Handle item click - emit event, optionally collapse rail, then open drawer.
+   * Collapse must come BEFORE openDrawer: while the rail is expanded, the
+   * orchestrator suppresses opens (mutual exclusion). Collapsing first ensures
+   * the click on an expanded rail still opens the drawer. */
   protected onItemClick(): void {
     this.itemClick.emit();
     if (this.railnav.autoCollapse()) {
       this.railnav.collapse();
     }
+    this.openDrawerIfAny();
   }
 
   /** Handle router link click - optionally collapse rail */
   protected onRouterLinkClick(): void {
     if (this.railnav.autoCollapse()) {
       this.railnav.collapse();
+    }
+  }
+
+  /** Hover-intent: when the item carries a `for` drawer, open it after a
+   * short delay. The delay is cancelled if the cursor leaves before it fires.
+   * Ignored on non-mouse pointers (touch/pen) — the click path handles them. */
+  protected onHostPointerEnter(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    if (!this.for() || !this.orchestrator) return;
+    if (this.railnav.expanded()) return;
+    this.clearEnterTimeout();
+    this.enterTimeout = setTimeout(
+      () => this.openDrawerIfAny(),
+      RailnavItemComponent.ENTER_DELAY_MS,
+    );
+  }
+
+  /** Arm the orchestrator's close timer when leaving the trigger item. If
+   * the cursor reaches the overlay before it fires, the overlay's own
+   * `pointerenter` cancels it. Ignored on touch/pen for the same reason. */
+  protected onHostPointerLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    this.clearEnterTimeout();
+    if (this.for()) this.orchestrator?.armClose();
+  }
+
+  private openDrawerIfAny(): void {
+    const drawer = this.for();
+    if (!drawer || !this.orchestrator) return;
+    this.clearEnterTimeout();
+    this.orchestrator.open(drawer);
+  }
+
+  private clearEnterTimeout(): void {
+    if (this.enterTimeout !== undefined) {
+      clearTimeout(this.enterTimeout);
+      this.enterTimeout = undefined;
     }
   }
 }

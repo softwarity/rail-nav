@@ -6,3 +6,5 @@ export { RailnavComponent, RailnavBrandingDirective } from './lib/railnav.compon
 export { RailnavContainerComponent } from './lib/railnav-container.component';
 export { RailnavContentComponent } from './lib/railnav-content.component';
 export { RailnavItemComponent } from './lib/railnav-item.component';
+export { RailnavSeparatorComponent } from './lib/railnav-separator.component';
+export { RailnavSpacerComponent } from './lib/railnav-spacer.component';
