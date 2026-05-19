@@ -69,6 +69,10 @@ import { NgTemplateOutlet } from '@angular/common';
       box-sizing: border-box;
       outline: none;
       width: 100%;
+      /* Transition gap so it animates in sync with the pill (height, margin) */
+      /* and the label (max-height) — otherwise gap snaps instantly to 0 and */
+      /* siblings jolt during the expand/collapse animation. */
+      transition: gap 0.2s ease;
     }
 
     .rail-item.position-end {
@@ -145,6 +149,15 @@ import { NgTemplateOutlet } from '@angular/common';
 
     :host:first-child .rail-item.expanded .rail-item-pill {
       margin-top: 0;
+    }
+
+    /* Last item (typically anchored at the bottom via <rail-nav-spacer/>): */
+    /* in expanded mode the pill loses both its margin-top AND the label-below */
+    /* below it, so the icon center jumps up 12px relative to the rail bottom. */
+    /* Mirror of the first-child fix: add a matching margin-bottom on the pill */
+    /* in expanded mode to keep the icon visually anchored. */
+    :host:last-child .rail-item.expanded .rail-item-pill {
+      margin-bottom: 12px;
     }
 
     .rail-item-icon-wrapper {
