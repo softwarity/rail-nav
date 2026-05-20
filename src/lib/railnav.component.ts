@@ -54,7 +54,17 @@ export class RailnavBrandingDirective {}
     </nav>
   `,
   styles: [`
-    :host {
+    /* Selectors are scoped to \`:host(.mat-drawer)\` (not bare \`:host\`) on
+       purpose. The host carries Material's \`mat-drawer mat-sidenav\` classes, and
+       Material's base \`.mat-drawer { width: 360px; background: ...surface }\`
+       rule has the SAME specificity as a bare \`:host\` — so the rail would only
+       win by stylesheet insertion order. The moment a consumer renders another
+       MatDrawer/MatSidenav (e.g. a nested mat-drawer-container in routed
+       content), Angular appends Material's sidenav styles AFTER the rail's, the
+       tie flips, and the rail adopts Material's defaults (360px wide, surface
+       background) — overlapping the content. \`:host(.mat-drawer)\` is one class
+       more specific, so the rail wins deterministically regardless of order. */
+    :host(.mat-drawer) {
       /* flex column so .rail-items can stretch (flex: 1) and */
       /* rail-nav-spacer inside it can push siblings to the bottom. */
       display: flex;
@@ -78,19 +88,19 @@ export class RailnavBrandingDirective {}
       --rail-nav-separator-shift: 12px;
     }
 
-    :host(.expanded) {
+    :host(.mat-drawer.expanded) {
       width: var(--rail-nav-expanded-width, fit-content);
       box-shadow: 4px 0 8px rgba(0,0,0,.2);
       /* Expanded mode has no label-below, items are flush. No shift needed. */
       --rail-nav-separator-shift: 0;
     }
 
-    :host(.position-end) {
+    :host(.mat-drawer.position-end) {
       left: auto;
       right: 0;
     }
 
-    :host(.position-end.expanded) {
+    :host(.mat-drawer.position-end.expanded) {
       box-shadow: -4px 0 8px rgba(0,0,0,.2);
     }
 

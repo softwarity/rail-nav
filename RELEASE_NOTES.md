@@ -2,6 +2,10 @@
 
 ## 1.1.3
 
+### Fixes
+
+- **Rail no longer balloons to 360px (and turns the wrong background) when a `mat-drawer-container` is nested in the content.** The rail's `:host` styles (width, background, position, …) shared the exact specificity of Material's base `.mat-drawer` rule (`width: var(--mat-sidenav-container-width, 360px); background: …surface`), so the rail only won the cascade by stylesheet insertion order. As soon as a consumer rendered another `MatDrawer`/`MatSidenav` — e.g. a `mat-drawer-container` inside routed content — Angular appended Material's sidenav styles **after** the rail's, the tie flipped, and the rail adopted Material's defaults: 360px wide with a surface background, overlapping the page content. The rail's host rules are now scoped to `:host(.mat-drawer)` (one class more specific than `.mat-drawer`), so the rail wins deterministically regardless of insertion order.
+
 ---
 
 ## 1.1.2
