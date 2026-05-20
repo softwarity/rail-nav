@@ -2,6 +2,14 @@
 
 ## 1.1.4
 
+### Fixes
+
+- **Rail no longer inherits stray Material `.mat-drawer` defaults next to a nested drawer.** Follow-up to the 1.1.3 fix: a few more base `.mat-drawer` declarations the rail never reset leaked through when Material's stylesheet won the cascade (e.g. on a route hosting another `MatDrawer`/`MatSidenav`). All collisions are now pinned on `:host(.mat-drawer)`:
+  - `border-radius` (`corner-large`) — was rounding the rail's right corners → now `border-radius: 0`.
+  - `color` — overrode the rail's text color → now `var(--rail-nav-on-surface, …)`.
+  - `transform: translate3d(-100%, 0, 0)` — now `transform: none`, so the rail no longer relies on Material's own side/opened resets winning the source order.
+  - `z-index` — Material's two-class rule `.mat-drawer.mat-drawer-side { z-index: 2 }` ties `:host(.mat-drawer)` on specificity, so the rail's `z-index: 100` is now `!important` (it's a fixed value, not themed) to keep the rail above page content.
+
 ---
 
 ## 1.1.3

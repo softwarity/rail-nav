@@ -73,12 +73,25 @@ export class RailnavBrandingDirective {}
       top: 0;
       bottom: 0;
       left: 0;
-      z-index: 100;
+      /* !important: Material has a two-class rule \`.mat-drawer.mat-drawer-side
+         { z-index: 2 }\` that TIES \`:host(.mat-drawer)\` on specificity, so a
+         selector bump alone wouldn't win. z-index is a fixed value (not themed
+         via a custom property), so !important is safe here. */
+      z-index: 100 !important;
       width: var(--rail-nav-collapsed-width, 72px);
       border: none !important;
+      /* Neutralise Material's .mat-drawer corner radius (corner-large): the rail
+         is a full-height edge surface, its corners must be square. Like width and
+         background above, this is only reliably overridden from :host(.mat-drawer). */
+      border-radius: 0;
       outline: none !important;
       box-shadow: none;
       background: var(--rail-nav-surface-color, var(--mat-sys-surface));
+      color: var(--rail-nav-on-surface, var(--mat-sys-on-surface));
+      /* Neutralise Material's base \`.mat-drawer { transform: translate3d(-100%,0,0) }\`
+         deterministically instead of relying on Material's own side/opened resets
+         winning the cascade order. */
+      transform: none;
       transition: width 0.2s ease;
       overflow: visible;
 
