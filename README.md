@@ -26,6 +26,9 @@ Material Design 3 Navigation Rail component for Angular. Extends Angular Materia
   <a href="https://softwarity.github.io/rail-nav/">
     <img src="assets/expanded.png" alt="Rail Nav Expanded" height="300">
   </a>
+  <a href="https://softwarity.github.io/rail-nav/">
+    <img src="assets/drawer.png" alt="Rail Nav Contextual Drawer" height="300">
+  </a>
 </p>
 
 ## Features
@@ -33,6 +36,8 @@ Material Design 3 Navigation Rail component for Angular. Extends Angular Materia
 - **Material Design 3** - Implements the Navigation Rail pattern from MD3
 - **Extends Material** - Built on top of `MatSidenav` for reliability
 - **Navigation Items** - `rail-nav-item` component with MD3 pill animation, badges, and router support
+- **Contextual Drawer** - `[for]` on an item opens a side drawer from an `<ng-template>`, with hover-intent, content cross-fade, outside-tap dismiss and mobile support
+- **Separator & Spacer** - `rail-nav-separator` to group items, `rail-nav-spacer` to anchor items at the bottom
 - **Expand/Collapse** - Smooth transition between rail and drawer with adaptive width
 - **Backdrop** - Optional backdrop overlay when expanded
 - **Position** - Support for left (start) or right (end) positioning
@@ -63,7 +68,10 @@ import {
   RailnavComponent,
   RailnavContainerComponent,
   RailnavContentComponent,
-  RailnavItemComponent
+  RailnavItemComponent,
+  RailnavSeparatorComponent, // Optional: separator between item groups
+  RailnavSpacerComponent,    // Optional: push following items to the bottom
+  RailnavBrandingDirective   // Optional: for custom branding
 } from '@softwarity/rail-nav';
 
 @Component({
@@ -71,7 +79,10 @@ import {
     RailnavComponent,
     RailnavContainerComponent,
     RailnavContentComponent,
-    RailnavItemComponent
+    RailnavItemComponent,
+    RailnavSeparatorComponent,
+    RailnavSpacerComponent,
+    RailnavBrandingDirective
   ],
   template: `
     <rail-nav-container>

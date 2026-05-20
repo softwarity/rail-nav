@@ -55,14 +55,38 @@ export class RailnavDrawerOrchestrator {
 
   /** Opens or re-targets the overlay to the given template. No-op while the
    * rail is expanded. Cancels any pending close timer (e.g. user hovered back
-   * from a quick traverse). */
+   * from a quick traverse). When the overlay is already open, re-targets it
+   * to the new template WITHOUT disposing — the chrome (bg/shadow/position)
+   * stays put while just the projected content fades in. */
   open(template: TemplateRef<unknown>): void {
     if (this.rail.expanded()) return;
     this.clearCloseTimer();
-    this.lastOpenAt = performance.now();
     if (this.currentTemplate === template && this.overlayRef?.hasAttached()) {
       return;
     }
+
+    // Re-target: existing overlay stays, just swap the portal content.
+    // Note: we do NOT reset `lastOpenAt` here — otherwise hovering a
+    // non-trigger item right after a re-target would be blocked by the
+    // synthetic-event guard, leaving the drawer stuck open.
+    if (this.overlayRef?.hasAttached()) {
+      // Cross-fade: fade the OLD content out first (children only, so the
+      // panel chrome/bg stays opaque the whole time — no flicker), then swap
+      // and fade the new content in. Reads as "content dissolves, new content
+      // appears" with the drawer staying perfectly still.
+      this.fadeOutContent().then(() => {
+        if (!this.overlayRef) return;
+        this.overlayRef.detach();
+        this.currentTemplate = template;
+        this.overlayRef.attach(new TemplatePortal(template, this.vcr));
+        this.applyHeight();
+        this.animateContentIn();
+      });
+      return;
+    }
+
+    // First open: arm the synthetic-event guard and build a fresh overlay.
+    this.lastOpenAt = performance.now();
     this.detach();
     this.currentTemplate = template;
 
@@ -124,18 +148,8 @@ export class RailnavDrawerOrchestrator {
     // variance between MatButton variants (e.g. text vs tonal padding).
     el.style.width = 'var(--rail-nav-drawer-width, 240px)';
 
-    // Subtle fade-in on every (re-)open: applied via Web Animations API so we
-    // don't ship CSS keyframes globally. Re-targeting the overlay to another
-    // template re-runs this animation, giving a soft cross-fade feel.
-    el.animate(
-      [
-        { opacity: 0, transform: 'translateX(-4px)' },
-        { opacity: 1, transform: 'translateX(0)' },
-      ],
-      { duration: 180, easing: 'ease-out' },
-    );
-
     this.overlayRef.attach(new TemplatePortal(template, this.vcr));
+    this.animateIn();
 
     // Match the rail's full height so the drawer sits flush against it
     // regardless of viewport / layout. ResizeObserver keeps it in sync.
@@ -149,6 +163,50 @@ export class RailnavDrawerOrchestrator {
     if (!this.overlayRef) return;
     const rect = this.railEl.nativeElement.getBoundingClientRect();
     this.overlayRef.overlayElement.style.height = `${rect.height}px`;
+  }
+
+  /** Slide-in fade on the whole overlay panel — used for the FIRST open, when
+   * the drawer genuinely appears from the rail. Web Animations API so no
+   * global CSS keyframes. Material standard easing for an organic feel. */
+  private animateIn(): void {
+    if (!this.overlayRef) return;
+    this.overlayRef.overlayElement.animate(
+      [
+        { opacity: 0, transform: 'translateX(-8px)' },
+        { opacity: 1, transform: 'translateX(0)' },
+      ],
+      { duration: 280, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+    );
+  }
+
+  /** Fade-in of just the content (panel children) — second half of the
+   * re-target cross-fade. Panel chrome stays fixed. */
+  private animateContentIn(): void {
+    if (!this.overlayRef) return;
+    for (const child of Array.from(this.overlayRef.overlayElement.children)) {
+      (child as HTMLElement).animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 160, easing: 'ease-out' },
+      );
+    }
+  }
+
+  /** Fade-out of just the content (panel children) — first half of the
+   * re-target cross-fade. Resolves once faded so the caller can swap the
+   * template while it's invisible. Panel chrome (bg/shadow) stays opaque, so
+   * there's no flicker. Resolves immediately if there's nothing to fade. */
+  private fadeOutContent(): Promise<void> {
+    if (!this.overlayRef) return Promise.resolve();
+    const children = Array.from(this.overlayRef.overlayElement.children) as HTMLElement[];
+    if (children.length === 0) return Promise.resolve();
+    const anims = children.map((c) =>
+      c.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 120,
+        easing: 'ease-in',
+        fill: 'forwards',
+      }),
+    );
+    return Promise.all(anims.map((a) => a.finished)).then(() => undefined);
   }
 
   /** Arms the close timer. Cancelled if the cursor returns to the trigger or

@@ -18,11 +18,22 @@
   RailnavComponent,
   RailnavContainerComponent,
   RailnavContentComponent,
-  RailnavBrandingDirective // Optional: for custom branding
+  RailnavItemComponent,
+  RailnavSeparatorComponent, // Optional: separator between item groups
+  RailnavSpacerComponent,    // Optional: push following items to the bottom
+  RailnavBrandingDirective   // Optional: for custom branding
 } from '@softwarity/rail-nav';
 
 @Component({
-  imports: [RailnavComponent, RailnavContainerComponent, RailnavContentComponent, RailnavBrandingDirective],
+  imports: [
+    RailnavComponent,
+    RailnavContainerComponent,
+    RailnavContentComponent,
+    RailnavItemComponent,
+    RailnavSeparatorComponent,
+    RailnavSpacerComponent,
+    RailnavBrandingDirective,
+  ],
   templateUrl: './app.component.html'
 })
 export class AppComponent {}</textarea>
@@ -232,6 +243,12 @@ export class AppComponent {}</textarea>
             <td><code>false</code></td>
             <td>Whether this item is active (for non-router usage)</td>
           </tr>
+          <tr>
+            <td><code>for</code></td>
+            <td><code>TemplateRef | null</code></td>
+            <td><code>null</code></td>
+            <td>Template projected as a contextual drawer when the item is hovered or clicked. See <a href="#contextual-drawer">Contextual drawer</a>.</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -275,6 +292,116 @@ export class AppComponent {}</textarea>
     </interactive-code>
   </article>
 
+  <!-- API - RailnavSeparatorComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavSeparatorComponent</h3>
+    <p>
+      Hairline separator between groups of <code>rail-nav-item</code>. Vertically centered with a
+      mode-aware shift so the spacing stays consistent in both collapsed and expanded modes.
+      No inputs — color is overridable via the <code>--rail-nav-separator-color</code> CSS variable.
+    </p>
+    <interactive-code language="html">
+      <textarea><rail-nav>
+  <rail-nav-item label="Home"><mat-icon>home</mat-icon></rail-nav-item>
+  <rail-nav-separator />
+  <rail-nav-item label="Trash"><mat-icon>delete</mat-icon></rail-nav-item>
+</rail-nav></textarea>
+    </interactive-code>
+  </article>
+
+  <!-- API - RailnavSpacerComponent -->
+  <article class="doc-section">
+    <h3>API - RailnavSpacerComponent</h3>
+    <p>
+      Flexible spacer (<code>flex: 1 1 auto</code>). Placed between two groups of items, it pushes
+      everything after it to the bottom of the rail — the classic pattern for keeping primary nav at
+      the top and secondary entries (Settings, Profile…) anchored at the bottom. No inputs.
+    </p>
+    <interactive-code language="html">
+      <textarea><rail-nav>
+  <rail-nav-item label="Home"><mat-icon>home</mat-icon></rail-nav-item>
+  <rail-nav-item label="Inbox"><mat-icon>inbox</mat-icon></rail-nav-item>
+  <rail-nav-spacer />
+  <rail-nav-item label="Settings"><mat-icon>settings</mat-icon></rail-nav-item>
+</rail-nav></textarea>
+    </interactive-code>
+  </article>
+
+  <!-- Contextual drawer -->
+  <article class="doc-section" id="contextual-drawer">
+    <h3>Contextual drawer</h3>
+    <p>
+      Any rail item can declare a contextual side drawer with <code>[for]="someTemplate"</code>. The
+      library renders the template in a CDK overlay next to the rail and handles hover-intent, close
+      debounce, outside-tap dismiss, mobile tap, scroll-aware positioning, auto-close when the rail
+      is expanded, and a content cross-fade when switching from one trigger to another.
+    </p>
+    <interactive-code language="html">
+      <textarea><rail-nav-item label="Workspaces" [for]="wsTpl">
+  <mat-icon>workspaces</mat-icon>
+</rail-nav-item>
+
+<ng-template #wsTpl>
+  <a routerLink="/ws/1">Workspace 1</a>
+  <a routerLink="/ws/2">Workspace 2</a>
+</ng-template></textarea>
+    </interactive-code>
+    <p>
+      The panel chrome (background, shadow, rounded corner) and the nav-list layout (flex column,
+      padding, gap, fixed width) are applied by the library — the template only needs its children.
+    </p>
+
+    <h4>Drawer CSS custom properties</h4>
+    <div class="api-table-wrapper">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>--rail-nav-drawer-width</code></td>
+            <td><code>240px</code></td>
+            <td>Fixed drawer width</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-padding</code></td>
+            <td><code>12px</code></td>
+            <td>Inner padding</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-gap</code></td>
+            <td><code>4px</code></td>
+            <td>Vertical gap between children</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-surface</code></td>
+            <td><code>var(--mat-sys-surface)</code></td>
+            <td>Background color</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-on-surface</code></td>
+            <td><code>var(--mat-sys-on-surface)</code></td>
+            <td>Text color</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-shadow</code></td>
+            <td><code>var(--mat-sys-level2)</code></td>
+            <td>Elevation</td>
+          </tr>
+          <tr>
+            <td><code>--rail-nav-drawer-radius</code></td>
+            <td><code>0 12px 12px 0</code></td>
+            <td>Outer border-radius</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
   <!-- Features -->
   <article class="doc-section">
     <h3>Features</h3>
@@ -283,6 +410,8 @@ export class AppComponent {}</textarea>
       <li><strong>Animated Burger</strong> - Built-in burger icon with 90° rotation animation</li>
       <li><strong>Title & Subtitle</strong> - Optional branding next to the burger, or use <code>railNavBranding</code> for custom content</li>
       <li><strong>Navigation Items</strong> - <code>rail-nav-item</code> with MD3 pill animation, badges, and router support</li>
+      <li><strong>Contextual Drawer</strong> - <code>[for]</code> on an item opens a side drawer from a <code>ng-template</code>, with hover-intent, cross-fade and mobile support</li>
+      <li><strong>Separator &amp; Spacer</strong> - <code>rail-nav-separator</code> for grouping, <code>rail-nav-spacer</code> to anchor items at the bottom</li>
       <li><strong>Extends Material</strong> - Built on top of <code>MatSidenav</code> for reliability</li>
       <li><strong>Expand/Collapse</strong> - Smooth transition between rail and drawer with adaptive width</li>
       <li><strong>Backdrop</strong> - Optional backdrop overlay when expanded</li>

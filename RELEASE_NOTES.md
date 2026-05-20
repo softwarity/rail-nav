@@ -2,30 +2,44 @@
 
 ## 1.1.2
 
+### Improvements
+
+- **Smoother drawer transition when switching triggers** — moving the cursor from one trigger item to another now keeps the overlay perfectly still and cross-fades only its content (old content fades out, new content fades in). It no longer reads as the drawer closing and reopening.
+
+### Docs
+
+- Documented the contextual drawer (`[for]` + `<ng-template>`), `RailnavSeparatorComponent` and `RailnavSpacerComponent` in the demo's API reference (and the README) — including the drawer's CSS custom properties.
+
 ---
 
 ## 1.1.1
 
 ### Features
 
-- **Contextual drawer pattern** (`<rail-nav-drawer>` + `[for]` on items):
-  - New `RailnavDrawerComponent` — declared anywhere in the host template, it holds the contextual content as an `<ng-template>`.
-  - `RailnavItemComponent` gains a `for` input (aliased to match `mat-datepicker-toggle`):
-    ```html
-    <rail-nav-item label="Workspaces" [for]="wsDrawer">
-      <mat-icon>workspaces</mat-icon>
-    </rail-nav-item>
-    <rail-nav-drawer #wsDrawer>
-      <a routerLink="/ws/1">Workspace 1</a>
-    </rail-nav-drawer>
-    ```
-  - The library handles **everything** consumers used to wire by hand:
-    - CDK overlay rendering positioned next to the rail
+- **Contextual drawer pattern** — a rail item can declare `[for]="someTemplate"` pointing to a plain `<ng-template>`, rendered in a CDK overlay next to the rail:
+  ```html
+  <rail-nav-item label="Workspaces" [for]="wsTpl">
+    <mat-icon>workspaces</mat-icon>
+  </rail-nav-item>
+  <ng-template #wsTpl>
+    <a routerLink="/ws/1">Workspace 1</a>
+  </ng-template>
+  ```
+  - `for` input on `RailnavItemComponent`, aliased to match `mat-datepicker-toggle` ergonomics.
+  - The library handles everything consumers used to wire by hand:
+    - CDK overlay rendering positioned next to the rail, scroll-aware so it stays glued to it
     - Hover-intent (200 ms delay before opening, cancelled if the cursor leaves first)
-    - Close debounce (300 ms after `mouseleave` on trigger or drawer, cancelled if the cursor comes back)
-    - Mutual exclusion with the rail's expanded mode (no drawer stacks on top of the expanded rail; expanding closes any open drawer)
-    - Single overlay reused across triggers — switching trigger items re-targets without flicker
-  - Consumer-side code is now just two bindings — no signals, no timers, no `mouseenter`/`mouseleave` handlers.
+    - Close debounce (300 ms after leaving the trigger or the drawer, cancelled if the cursor comes back)
+    - Outside-tap dismiss; mobile/touch tap to open (synthetic mouse events after a tap are guarded so the drawer doesn't close instantly)
+    - Mutual exclusion with the rail's expanded mode (no drawer stacks on the expanded rail; expanding closes any open drawer)
+    - Single overlay reused across triggers — switching from one trigger to another re-targets the same overlay
+  - Panel chrome (background, shadow, rounded corner) and nav-list layout (flex column, padding, gap, fixed width) are applied by the library, so the template only needs its children. Themable via CSS custom properties: `--rail-nav-drawer-width`, `--rail-nav-drawer-padding`, `--rail-nav-drawer-gap`, `--rail-nav-drawer-surface`, `--rail-nav-drawer-on-surface`, `--rail-nav-drawer-shadow`, `--rail-nav-drawer-radius`.
+- **`RailnavSeparatorComponent`** (`<rail-nav-separator />`) — hairline rule between item groups, kept visually centered in both collapsed and expanded modes via a mode-aware vertical shift. Color via `--rail-nav-separator-color`.
+- **`RailnavSpacerComponent`** (`<rail-nav-spacer />`) — flexible spacer that pushes following items to the bottom of the rail (e.g. Settings anchored at the bottom).
+
+### Fixes
+
+- Rail items no longer jolt during expand/collapse: the inter-icon `gap` transitions in sync with the pill, and the first/last items keep their icon visually stable across modes via mirrored margin compensation.
 
 ---
 
