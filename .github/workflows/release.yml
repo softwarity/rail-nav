@@ -12,6 +12,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Verify NPM token is valid
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm whoami --registry https://registry.npmjs.org/
       - run: git config user.name "$GITHUB_ACTOR"
       - run: git config user.email ""
       - name: Version, prepare next release notes, and push
