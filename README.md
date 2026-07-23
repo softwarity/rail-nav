@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/npm/v/@softwarity/rail-nav?color=blue&label=npm" alt="npm version">
   </a>
   <a href="https://github.com/softwarity/rail-nav/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="license">
   </a>
 </p>
 
@@ -387,4 +387,4 @@ export class MyComponent {}
 
 ## License
 
-MIT
+Apache-2.0
