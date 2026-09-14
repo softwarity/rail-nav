@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.1.6
+## NEXT RELEASE
 
 ### Features
 
