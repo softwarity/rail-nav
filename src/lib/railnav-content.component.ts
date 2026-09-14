@@ -56,7 +56,8 @@ export class RailnavContentComponent extends MatSidenavContent {
 
   /**
    * Mirrors the section in view in the URL fragment (`#id`) — replacing the history entry, never
-   * adding one — and scrolls to the fragment's section when the page loads.
+   * adding one — and scrolls to the fragment's section when the page loads. Not for an app routed
+   * with `withHashLocation()`: its route lives in the fragment, which this would overwrite.
    */
   readonly anchorFragment = input(false, { transform: booleanAttribute });
 

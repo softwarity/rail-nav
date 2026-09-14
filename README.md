@@ -222,7 +222,8 @@ the page scrolls — no `active` bookkeeping in the host.
   `scrollTo({ behavior: 'smooth' })` — skipped under `prefers-reduced-motion`, and it stops as soon
   as the user scrolls.
 - `anchorFragment` keeps `#section` in the address bar without adding history entries, and opens a
-  shared link on its section.
+  shared link on its section. Leave it off in an app routed with `withHashLocation()`: the route
+  lives in the fragment, which `anchorFragment` would overwrite.
 - The active item carries `aria-current="location"`.
 
 ## Contextual drawer

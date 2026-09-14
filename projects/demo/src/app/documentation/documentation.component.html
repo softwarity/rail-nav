@@ -333,7 +333,7 @@ export class AppComponent {}</textarea>
       <li>The section in view is the last one scrolled up to <code>scrollOffset</code> px below the top of the content. Once the content is scrolled to the very bottom, the last section in view wins, so a short final section still gets its turn.</li>
       <li>Only the sections some item points at are watched. They must sit inside <code>rail-nav-content</code>, the element that scrolls.</li>
       <li>The scroll is animated by the component — <code>MatSidenavContent</code> ignores <code>scrollTo(&#123; behavior: 'smooth' &#125;)</code> — skipped under <code>prefers-reduced-motion</code>, and it stops as soon as the user scrolls.</li>
-      <li><code>anchorFragment</code> keeps <code>#section</code> in the address bar without adding history entries, and opens a shared link on its section.</li>
+      <li><code>anchorFragment</code> keeps <code>#section</code> in the address bar without adding history entries, and opens a shared link on its section. Leave it off in an app routed with <code>withHashLocation()</code>: the route lives in the fragment, which <code>anchorFragment</code> would overwrite.</li>
       <li>The active item carries <code>aria-current="location"</code>.</li>
     </ul>
   </article>
