@@ -2,6 +2,10 @@
 
 ## NEXT RELEASE
 
+---
+
+## 1.2.0
+
 ### Features
 
 - **Scroll-spy for single-page sections.** `<rail-nav-item anchor="section-id">` scrolls `rail-nav-content` smoothly to the element `#section-id` on click, and the item of the section in view turns active as the page scrolls, with `aria-current="location"` — no more `[active]` bookkeeping on anchored pages. `rail-nav-content` gains:
