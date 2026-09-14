@@ -12,6 +12,7 @@ import {
   RailnavBrandingDirective
 } from '@softwarity/rail-nav';
 import { HoverDrawerDemoComponent } from '../hover-drawer-demo/hover-drawer-demo.component';
+import { ScrollSpyDemoComponent } from '../scroll-spy-demo/scroll-spy-demo.component';
 // Register interactive-code custom elements
 import { registerInteractiveCode } from '@softwarity/interactive-code';
 registerInteractiveCode();
@@ -33,7 +34,8 @@ const PALETTES = [
     RailnavContentComponent,
     RailnavItemComponent,
     RailnavBrandingDirective,
-    HoverDrawerDemoComponent
+    HoverDrawerDemoComponent,
+    ScrollSpyDemoComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './playground.component.html',

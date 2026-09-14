@@ -1,0 +1,26 @@
+<section class="scroll-spy-demo">
+  <rail-nav-container class="frame" [showBackdrop]="false">
+    <rail-nav>
+      @for (section of sections; track section.id) {
+        <rail-nav-item [label]="section.label" [anchor]="section.id">
+          <mat-icon>{{ section.icon }}</mat-icon>
+        </rail-nav-item>
+      }
+    </rail-nav>
+
+    <rail-nav-content #content scrollOffset="48">
+      <mat-toolbar class="sticky-bar">
+        In view: <code>{{ content.activeAnchor() ?? "—" }}</code>
+      </mat-toolbar>
+      @for (section of sections; track section.id; let last = $last) {
+        <section class="spy-section" [class.short]="last" [id]="section.id">
+          <h4>{{ section.label }}</h4>
+          <p>
+            A section of the page. Its item in the rail is active while this section is the last one scrolled up
+            to the sticky bar.
+          </p>
+        </section>
+      }
+    </rail-nav-content>
+  </rail-nav-container>
+</section>

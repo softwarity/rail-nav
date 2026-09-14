@@ -136,6 +136,17 @@ Container component. Extends `MatSidenavContainer`.
 
 Content area component. Extends `MatSidenavContent`.
 
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `position` | `'start' \| 'end'` | from the sibling rail | Rail side, when it cannot be read from a sibling `rail-nav` |
+| `scrollOffset` | `number` | `0` | Distance (px) from the top at which a section counts as reached, and the room kept above a section scrolled to — the height of a sticky header, if any. See [Scroll-spy](#scroll-spy) |
+| `anchorFragment` | `boolean` | `false` | Mirror the section in view in the URL fragment (`#id`, replacing the history entry) and scroll to the fragment's section on load |
+
+| Property/Method | Type | Description |
+|-----------------|------|-------------|
+| `activeAnchor` | `Signal<string \| null>` | Id of the section in view, among the anchors of the rail's items |
+| `scrollToAnchor(id, behavior?)` | `void` | Scroll to the section `#id` — `'smooth'` (default) or `'instant'` — and make its item active |
+
 **Note:** When placed inside a `rail-nav-container` alongside a `rail-nav`, the component automatically detects the rail position and applies the correct margin using the `--rail-nav-collapsed-width` CSS variable.
 
 ### RailnavItemComponent
@@ -147,7 +158,8 @@ Navigation item with MD3 pill animation.
 | `routerLink` | `string \| any[]` | - | Router link for navigation |
 | `label` | `string` | - | Label text (below icon when collapsed, beside when expanded) |
 | `badge` | `string \| number \| boolean` | - | Badge value. Use `true` for a small dot badge |
-| `active` | `boolean` | `false` | Whether this item is active (for non-router usage) |
+| `active` | `boolean` | `false` | Whether this item is active (for non-router usage). An `anchor` item is also active while its section is in view |
+| `anchor` | `string` | - | Id of an element inside `rail-nav-content`: a click scrolls to it, and the item is active while that section is in view. See [Scroll-spy](#scroll-spy). Ignored with `routerLink` |
 | `for` | `TemplateRef \| null` | `null` | Template projected as a contextual drawer when the item is hovered or clicked. Aliased to `for` for `mat-datepicker-toggle`-style ergonomics. See [Contextual drawer](#contextual-drawer). |
 
 | Output | Type | Description |
@@ -180,6 +192,38 @@ Flexible spacer (`flex: 1 1 auto`). Place between two groups of items to push ev
   <rail-nav-item label="Settings">...</rail-nav-item>
 </rail-nav>
 ```
+
+## Scroll-spy
+
+For a single page split into sections, point each item at the `id` of its section instead of a
+route. A click scrolls smoothly to the section, and the item of the section in view turns active as
+the page scrolls — no `active` bookkeeping in the host.
+
+```html
+<rail-nav-container>
+  <rail-nav>
+    <rail-nav-item label="Palette" anchor="palette"><mat-icon>palette</mat-icon></rail-nav-item>
+    <rail-nav-item label="Forms" anchor="forms"><mat-icon>edit_note</mat-icon></rail-nav-item>
+  </rail-nav>
+  <rail-nav-content scrollOffset="64" anchorFragment>
+    <mat-toolbar class="sticky-header">…</mat-toolbar>
+    <section id="palette">…</section>
+    <section id="forms">…</section>
+  </rail-nav-content>
+</rail-nav-container>
+```
+
+- The section in view is the last one scrolled up to `scrollOffset` px below the top of the content.
+  Once the content is scrolled to the very bottom, the last section in view wins, so a short final
+  section still gets its turn.
+- Only the sections some item points at are watched. They must sit inside `rail-nav-content`, the
+  element that scrolls.
+- The scroll is animated by the component — `MatSidenavContent` ignores
+  `scrollTo({ behavior: 'smooth' })` — skipped under `prefers-reduced-motion`, and it stops as soon
+  as the user scrolls.
+- `anchorFragment` keeps `#section` in the address bar without adding history entries, and opens a
+  shared link on its section.
+- The active item carries `aria-current="location"`.
 
 ## Contextual drawer
 

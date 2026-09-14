@@ -198,10 +198,23 @@ export class AppComponent {}</textarea>
             <td><code>auto</code></td>
             <td>Position of rail. Auto-detected from sibling <code>rail-nav</code> if not set</td>
           </tr>
+          <tr>
+            <td><code>scrollOffset</code></td>
+            <td><code>number</code></td>
+            <td><code>0</code></td>
+            <td>Distance (px) from the top at which a section counts as reached, and the room kept above a section scrolled to — the height of a sticky header, if any. See <a href="#scroll-spy">Scroll-spy</a>.</td>
+          </tr>
+          <tr>
+            <td><code>anchorFragment</code></td>
+            <td><code>boolean</code></td>
+            <td><code>false</code></td>
+            <td>Mirror the section in view in the URL fragment (<code>#id</code>, replacing the history entry) and scroll to the fragment's section on load</td>
+          </tr>
         </tbody>
       </table>
     </div>
     <p><strong>Note:</strong> Position is optional. When placed inside a <code>rail-nav-container</code> alongside a <code>rail-nav</code>, the component automatically reads <code>position</code> from the sibling rail.</p>
+    <p><code>activeAnchor</code> (<code>Signal&lt;string | null&gt;</code>) exposes the section in view among the items' anchors, and <code>scrollToAnchor(id, behavior?)</code> scrolls to one — <code>'smooth'</code> by default, or <code>'instant'</code>.</p>
   </article>
 
   <!-- API - RailnavItemComponent -->
@@ -241,7 +254,13 @@ export class AppComponent {}</textarea>
             <td><code>active</code></td>
             <td><code>boolean</code></td>
             <td><code>false</code></td>
-            <td>Whether this item is active (for non-router usage)</td>
+            <td>Whether this item is active (for non-router usage). An <code>anchor</code> item is also active while its section is in view</td>
+          </tr>
+          <tr>
+            <td><code>anchor</code></td>
+            <td><code>string</code></td>
+            <td><code>undefined</code></td>
+            <td>Id of an element inside <code>rail-nav-content</code>: a click scrolls to it, and the item is active while that section is in view. Ignored with <code>routerLink</code>. See <a href="#scroll-spy">Scroll-spy</a>.</td>
           </tr>
           <tr>
             <td><code>for</code></td>
@@ -290,6 +309,33 @@ export class AppComponent {}</textarea>
   <mat-icon>settings</mat-icon>
 </rail-nav-item></textarea>
     </interactive-code>
+  </article>
+
+  <!-- Scroll-spy -->
+  <article class="doc-section" id="scroll-spy">
+    <h3>Scroll-spy</h3>
+    <p>For a single page split into sections, point each item at the <code>id</code> of its section instead of a route. A click scrolls smoothly to the section, and the item of the section in view turns active as the page scrolls — no <code>active</code> bookkeeping in the host.</p>
+    <interactive-code language="html">
+      <textarea><rail-nav-container>
+  <rail-nav>
+    <rail-nav-item label="Palette" anchor="palette"><mat-icon>palette</mat-icon></rail-nav-item>
+    <rail-nav-item label="Forms" anchor="forms"><mat-icon>edit_note</mat-icon></rail-nav-item>
+  </rail-nav>
+  <!-- scrollOffset: the height of the sticky header; anchorFragment: #section in the URL -->
+  <rail-nav-content scrollOffset="64" anchorFragment>
+    <mat-toolbar class="sticky-header">…</mat-toolbar>
+    <section id="palette">…</section>
+    <section id="forms">…</section>
+  </rail-nav-content>
+</rail-nav-container></textarea>
+    </interactive-code>
+    <ul>
+      <li>The section in view is the last one scrolled up to <code>scrollOffset</code> px below the top of the content. Once the content is scrolled to the very bottom, the last section in view wins, so a short final section still gets its turn.</li>
+      <li>Only the sections some item points at are watched. They must sit inside <code>rail-nav-content</code>, the element that scrolls.</li>
+      <li>The scroll is animated by the component — <code>MatSidenavContent</code> ignores <code>scrollTo(&#123; behavior: 'smooth' &#125;)</code> — skipped under <code>prefers-reduced-motion</code>, and it stops as soon as the user scrolls.</li>
+      <li><code>anchorFragment</code> keeps <code>#section</code> in the address bar without adding history entries, and opens a shared link on its section.</li>
+      <li>The active item carries <code>aria-current="location"</code>.</li>
+    </ul>
   </article>
 
   <!-- API - RailnavSeparatorComponent -->

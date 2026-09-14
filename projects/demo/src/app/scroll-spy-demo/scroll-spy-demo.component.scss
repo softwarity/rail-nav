@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.frame {
+  display: block;
+  height: 360px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+}
+
+// Sticky inside the scrolling content: `scrollOffset` is its height.
+.sticky-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 48px;
+  gap: 8px;
+  font: var(--mat-sys-body-medium);
+  background: var(--mat-sys-surface-container);
+}
+
+.spy-section {
+  box-sizing: border-box;
+  min-height: 320px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  &.short {
+    min-height: 140px;
+    border-bottom: 0;
+  }
+
+  h4 {
+    margin: 0 0 8px;
+    font: var(--mat-sys-title-medium);
+  }
+}

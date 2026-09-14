@@ -1,6 +1,7 @@
 import { Component, ContentChild, input } from '@angular/core';
 import { MatSidenavContainer, MatDrawerContainer } from '@angular/material/sidenav';
 import { RailnavComponent } from './railnav.component';
+import { RailnavAnchors } from './railnav-anchors';
 
 @Component({
   selector: 'rail-nav-container',
@@ -51,7 +52,9 @@ import { RailnavComponent } from './railnav.component';
     'class': 'mat-drawer-container mat-sidenav-container'
   },
   providers: [
-    { provide: MatDrawerContainer, useExisting: RailnavContainerComponent }
+    { provide: MatDrawerContainer, useExisting: RailnavContainerComponent },
+    // Lets the rail's items and the content share their anchors (scroll-spy).
+    RailnavAnchors
   ]
 })
 export class RailnavContainerComponent extends MatSidenavContainer {

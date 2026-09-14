@@ -1,8 +1,9 @@
-import { Component, DestroyRef, TemplateRef, input, output, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, TemplateRef, input, output, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatRippleModule } from '@angular/material/core';
 import { RailnavComponent } from './railnav.component';
 import { RailnavDrawerOrchestrator } from './railnav-drawer.orchestrator';
+import { RailnavAnchors } from './railnav-anchors';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
@@ -41,7 +42,8 @@ import { NgTemplateOutlet } from '@angular/common';
         class="rail-item"
         [class.expanded]="expanded()"
         [class.position-end]="position() === 'end'"
-        [class.active]="active()"
+        [class.active]="isActive()"
+        [attr.aria-current]="anchorActive() ? 'location' : null"
         (click)="onItemClick()">
         <ng-container [ngTemplateOutlet]="iconTpl" />
       </button>
@@ -281,8 +283,12 @@ export class RailnavItemComponent {
   /** Badge value (number, text, or true for dot badge) */
   readonly badge = input<string | number | boolean>();
 
-  /** Whether this item is active (for non-router usage) */
+  /** Whether this item is active (for non-router usage). An `anchor` item is also active while its section is in view. */
   readonly active = input(false);
+
+  /** Id of an element inside `rail-nav-content`: a click scrolls to it, and the item turns active
+   * while that section is in view (scroll-spy). Ignored on a `routerLink` item. */
+  readonly anchor = input<string>();
 
   /** Template projected as a contextual side panel when the item is hovered
    * or clicked. Aliased `for` to mirror Material's `mat-datepicker-toggle`
@@ -322,11 +328,30 @@ export class RailnavItemComponent {
    * the item is rendered outside a real rail. */
   private orchestrator = inject(RailnavDrawerOrchestrator, { optional: true });
 
+  /** Shared with `rail-nav-content` by the container. null outside a container. */
+  private readonly anchors = inject(RailnavAnchors, { optional: true });
+
+  /** The section of this item's `anchor` is the one in view. */
+  protected readonly anchorActive = computed(() => {
+    const id = this.anchor();
+    return !!id && this.anchors?.active() === id;
+  });
+
+  protected readonly isActive = computed(() => this.active() || this.anchorActive());
+
   /** Pending hover-intent timer, cleared on leave or destroy. */
   private enterTimeout?: ReturnType<typeof setTimeout>;
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.clearEnterTimeout());
+    // The content only watches the sections some item points at.
+    effect((onCleanup) => {
+      const id = this.anchor();
+      const anchors = this.anchors;
+      if (!id || !anchors) return;
+      anchors.register(id);
+      onCleanup(() => anchors.unregister(id));
+    });
   }
 
   /** Whether the rail is expanded */
@@ -341,6 +366,8 @@ export class RailnavItemComponent {
    * the click on an expanded rail still opens the drawer. */
   protected onItemClick(): void {
     this.itemClick.emit();
+    const anchor = this.anchor();
+    if (anchor) this.anchors?.scrollTo(anchor);
     if (this.railnav.autoCollapse()) {
       this.railnav.collapse();
     }

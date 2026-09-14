@@ -2,6 +2,15 @@
 
 ## 1.1.6
 
+### Features
+
+- **Scroll-spy for single-page sections.** `<rail-nav-item anchor="section-id">` scrolls `rail-nav-content` smoothly to the element `#section-id` on click, and the item of the section in view turns active as the page scrolls, with `aria-current="location"` — no more `[active]` bookkeeping on anchored pages. `rail-nav-content` gains:
+  - `scrollOffset` — where a section counts as reached, and the room kept above it (the height of a sticky header);
+  - `anchorFragment` — mirrors the section in the URL fragment without adding history entries, and opens a shared link on its section;
+  - the `activeAnchor` signal and `scrollToAnchor(id, behavior?)`.
+
+  Once the content is scrolled to the very bottom, the last section in view wins, so a short final section still gets its turn. The scroll animation is the component's own — `MatSidenavContent` ignores `scrollTo({ behavior: 'smooth' })` — skipped under `prefers-reduced-motion` and stopped as soon as the user scrolls.
+
 ---
 
 ## 1.1.5
