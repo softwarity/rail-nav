@@ -6,7 +6,8 @@ import { RailnavContentComponent } from './railnav-content.component';
 import { RailnavItemComponent } from './railnav-item.component';
 
 // Content 300px high over sections of 400 + 400 + 100px: 600px of scroll, and a last section too
-// short to ever reach the top.
+// short to ever reach the top. The sticky header has no height, not to move the sections: only its
+// button shows.
 @Component({
   template: `
     <rail-nav-container style="display: block; height: 300px">
@@ -16,6 +17,7 @@ import { RailnavItemComponent } from './railnav-item.component';
         }
       </rail-nav>
       <rail-nav-content [scrollOffset]="offset()" [anchorFragment]="fragment()">
+        <header style="position: sticky; top: 0; height: 0"><button id="menu">Menu</button></header>
         <section id="alpha" style="height: 400px">Alpha</section>
         <section id="beta" style="height: 400px">Beta</section>
         <section id="gamma" style="height: 100px">Gamma</section>
@@ -35,6 +37,7 @@ describe('RailnavContentComponent scroll-spy', () => {
   let component: ScrollSpyHostComponent;
   let fixture: ComponentFixture<ScrollSpyHostComponent>;
   let initialUrl: string;
+  let base: HTMLBaseElement | undefined;
 
   const nextFrame = (): Promise<void> => new Promise((resolve) => requestAnimationFrame(() => resolve()));
   const settle = async (): Promise<void> => {
@@ -52,6 +55,13 @@ describe('RailnavContentComponent scroll-spy', () => {
     [...fixture.nativeElement.querySelectorAll('rail-nav-item .rail-item.active .label-below')].map((label: Element) => label.textContent ?? '');
   const itemButton = (label: string): HTMLButtonElement =>
     [...fixture.nativeElement.querySelectorAll('rail-nav-item button.rail-item')].find((b: Element) => b.querySelector('.label-below')?.textContent === label) as HTMLButtonElement;
+  /** Navigates to `#id` for real: the browser scrolls to the section on its own. */
+  const navigateTo = async (id: string): Promise<void> => {
+    const url = new URL(location.href);
+    url.hash = id;
+    location.replace(url.href);
+    await settle();
+  };
   /** Renders the host again, as a page opened on `hash`. */
   const reopenAt = async (hash: string, fragment: boolean): Promise<void> => {
     fixture.destroy();
@@ -76,7 +86,11 @@ describe('RailnavContentComponent scroll-spy', () => {
     await settle();
   });
 
-  afterEach(() => history.replaceState(history.state, '', initialUrl));
+  afterEach(() => {
+    history.replaceState(history.state, '', initialUrl);
+    base?.remove();
+    base = undefined;
+  });
 
   it('should activate the first section at the top', () => {
     expect(component.content().activeAnchor()).toBe('alpha');
@@ -136,6 +150,31 @@ describe('RailnavContentComponent scroll-spy', () => {
     expect(component.content().activeAnchor()).toBe('beta');
   });
 
+  it('should leave the scroll offset above a section the browser scrolls to on its own', async () => {
+    component.offset.set(100);
+    await settle();
+    // The same scroll as the one a shared link gets from the browser while the page loads.
+    await navigateTo('beta');
+    expect(scroller().scrollTop).toBe(300);
+    expect(component.content().activeAnchor()).toBe('beta');
+  });
+
+  it("should leave the page's own scroll margin to a section without a scroll offset", async () => {
+    const style = document.head.appendChild(document.createElement('style'));
+    style.textContent = 'rail-nav-content section { scroll-margin-top: 50px }';
+    await navigateTo('beta');
+    style.remove();
+    expect(scroller().scrollTop).toBe(350);
+  });
+
+  it('should not scroll when the focus moves into a sticky header', async () => {
+    component.offset.set(100);
+    await scrollTo(450);
+    fixture.nativeElement.querySelector('#menu').focus();
+    await settle();
+    expect(scroller().scrollTop).toBe(450);
+  });
+
   it('should keep the URL fragment untouched by default', async () => {
     await scrollTo(450);
     expect(location.hash).not.toBe('#beta');
@@ -147,6 +186,37 @@ describe('RailnavContentComponent scroll-spy', () => {
     await scrollTo(450);
     expect(location.hash).toBe('#beta');
     expect(history.length).toBe(entries);
+  });
+
+  it('should keep the path of the URL when mirroring the section in the fragment', async () => {
+    // As in any Angular app: a bare `#id` would resolve against the base, not against the page.
+    base = document.head.appendChild(document.createElement('base'));
+    base.href = '/';
+    const path = location.pathname;
+    component.fragment.set(true);
+    await scrollTo(450);
+    expect(location.hash).toBe('#beta');
+    expect(location.pathname).toBe(path);
+  });
+
+  it('should drop the fragment from the URL once no section is reached', async () => {
+    component.ids.set(['beta', 'gamma']);
+    component.fragment.set(true);
+    await scrollTo(450);
+    expect(location.hash).toBe('#beta');
+    await scrollTo(0);
+    expect(component.content().activeAnchor()).toBeNull();
+    expect(location.href).not.toContain('#');
+  });
+
+  it('should leave a fragment that names no section in the URL', async () => {
+    component.ids.set(['beta', 'gamma']);
+    history.replaceState(history.state, '', '#elsewhere');
+    await settle();
+    component.fragment.set(true);
+    await settle();
+    expect(component.content().activeAnchor()).toBeNull();
+    expect(location.hash).toBe('#elsewhere');
   });
 
   it("should open a shared link on its section when asked", async () => {

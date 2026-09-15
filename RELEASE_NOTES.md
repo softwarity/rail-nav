@@ -2,6 +2,12 @@
 
 ## NEXT RELEASE
 
+### Fixes
+
+- **`anchorFragment` keeps the path of the URL.** The fragment was written as a bare `#id`, which `history.replaceState()` resolves against the document's `<base href>` rather than the page: in an Angular app (`<base href="/">`), `/users/42` turned into `/#section` in the address bar — unseen by the Router, but a reload or a copied link opened the root. The fragment is now set on the whole current URL.
+- **A shared link no longer lands under the sticky header.** While the page loads, the browser scrolls to the fragment on its own, after the rail did, and put the section back at the very top of `rail-nav-content`. With a `scrollOffset`, the section the URL targets now gets it as `scroll-margin-top`, so the browser's scroll — on load or from an in-page link — leaves the same room. On the `:target` only: a `scroll-padding-top` on the content would scroll it back up whenever the focus enters a sticky header.
+- **`anchorFragment` drops the fragment above the first section.** Back above every section, the URL kept the last `#section`, so a copied link opened further down. The fragment is now removed, if it names one of the rail's anchors; a fragment the rail does not own stays.
+
 ---
 
 ## 1.2.0

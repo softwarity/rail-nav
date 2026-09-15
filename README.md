@@ -139,8 +139,8 @@ Content area component. Extends `MatSidenavContent`.
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
 | `position` | `'start' \| 'end'` | from the sibling rail | Rail side, when it cannot be read from a sibling `rail-nav` |
-| `scrollOffset` | `number` | `0` | Distance (px) from the top at which a section counts as reached, and the room kept above a section scrolled to — the height of a sticky header, if any. See [Scroll-spy](#scroll-spy) |
-| `anchorFragment` | `boolean` | `false` | Mirror the section in view in the URL fragment (`#id`, replacing the history entry) and scroll to the fragment's section on load |
+| `scrollOffset` | `number` | `0` | Distance (px) from the top at which a section counts as reached, and the room kept above a section scrolled to, by the rail or by the browser for a URL fragment: the height of a sticky header, if any. See [Scroll-spy](#scroll-spy) |
+| `anchorFragment` | `boolean` | `false` | Mirror the section in view in the URL fragment (`#id`, replacing the history entry; none above the first section) and scroll to the fragment's section on load |
 
 | Property/Method | Type | Description |
 |-----------------|------|-------------|
@@ -216,14 +216,17 @@ the page scrolls — no `active` bookkeeping in the host.
 - The section in view is the last one scrolled up to `scrollOffset` px below the top of the content.
   Once the content is scrolled to the very bottom, the last section in view wins, so a short final
   section still gets its turn.
+- The browser's own scroll to a URL fragment — a shared link while the page loads, an in-page
+  `<a href="#…">` — leaves the same room above the section. Avoid `scroll-padding-top` on
+  `rail-nav-content` for that: the focus entering a sticky header would scroll the content back up.
 - Only the sections some item points at are watched. They must sit inside `rail-nav-content`, the
   element that scrolls.
 - The scroll is animated by the component — `MatSidenavContent` ignores
   `scrollTo({ behavior: 'smooth' })` — skipped under `prefers-reduced-motion`, and it stops as soon
   as the user scrolls.
-- `anchorFragment` keeps `#section` in the address bar without adding history entries, and opens a
-  shared link on its section. Leave it off in an app routed with `withHashLocation()`: the route
-  lives in the fragment, which `anchorFragment` would overwrite.
+- `anchorFragment` keeps `#section` in the address bar without adding history entries, removes it
+  above the first section, and opens a shared link on its section. Leave it off in an app routed
+  with `withHashLocation()`: the route lives in the fragment, which `anchorFragment` would overwrite.
 - The active item carries `aria-current="location"`.
 
 ## Contextual drawer

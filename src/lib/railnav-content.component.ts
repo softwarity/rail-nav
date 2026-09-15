@@ -38,10 +38,20 @@ import { RailnavContainerComponent } from './railnav-container.component';
       margin-left: 0;
       margin-right: var(--rail-nav-collapsed-width, 72px);
     }
+
+    /* The browser's own scroll to a URL fragment — a shared link loading, an in-page link — leaves
+       the scroll offset above the section too. On the :target only: a scroll-padding on the content
+       would also scroll it back whenever the focus enters a sticky header. Without an offset, the
+       page's own scroll-margin stays. */
+    :host(.scroll-offset) ::ng-deep :target {
+      scroll-margin-top: var(--rail-nav-scroll-offset);
+    }
   `],
   host: {
     'class': 'mat-drawer-content mat-sidenav-content',
-    '[class.position-end]': 'effectivePosition() === "end"'
+    '[class.position-end]': 'effectivePosition() === "end"',
+    '[class.scroll-offset]': 'scrollOffset() > 0',
+    '[style.--rail-nav-scroll-offset.px]': 'scrollOffset() || null'
   }
 })
 export class RailnavContentComponent extends MatSidenavContent {
@@ -50,14 +60,16 @@ export class RailnavContentComponent extends MatSidenavContent {
 
   /**
    * Distance (px) from the top of the content at which a section counts as reached, and the room
-   * left above a section scrolled to. Set it to the height of a sticky header, if any.
+   * left above a section scrolled to — by the rail, or by the browser for a URL fragment. Set it to
+   * the height of a sticky header, if any.
    */
   readonly scrollOffset = input(0, { transform: numberAttribute });
 
   /**
-   * Mirrors the section in view in the URL fragment (`#id`) — replacing the history entry, never
-   * adding one — and scrolls to the fragment's section when the page loads. Not for an app routed
-   * with `withHashLocation()`: its route lives in the fragment, which this would overwrite.
+   * Mirrors the section in view in the URL fragment (`#id`), dropped above the first section —
+   * replacing the history entry, never adding one — and scrolls to the fragment's section when the
+   * page loads. Not for an app routed with `withHashLocation()`: its route lives in the fragment,
+   * which this would overwrite.
    */
   readonly anchorFragment = input(false, { transform: booleanAttribute });
 
@@ -82,6 +94,8 @@ export class RailnavContentComponent extends MatSidenavContent {
   private scrollFrame = 0;
   /** A scroll to an anchor is running: the section in view is the one asked for, not the one passing by. */
   private scrollingToAnchor = false;
+  /** Until the page's opening fragment is read, dropping it would lose a shared link. */
+  private fragmentRead = false;
 
   constructor() {
     super();
@@ -112,16 +126,15 @@ export class RailnavContentComponent extends MatSidenavContent {
     });
     effect(() => {
       const id = anchors.active();
-      if (id && this.anchorFragment()) this.writeFragment(id);
+      if (!this.anchorFragment()) return;
+      if (id) this.writeFragment(id);
+      // No section reached: drop the fragment, if it is one of ours.
+      else if (this.fragmentRead && anchors.ids().has(this.fragmentId())) this.writeFragment(null);
     });
     afterNextRender(() => {
+      this.fragmentRead = true;
       if (!this.anchorFragment()) return;
-      let id: string;
-      try {
-        id = decodeURIComponent(this.doc.location.hash.slice(1));
-      } catch {
-        return; // A malformed fragment (`#50%`) names no section.
-      }
+      const id = this.fragmentId();
       if (id && anchors.ids().has(id)) this.scrollToAnchor(id, 'instant');
     });
   }
@@ -198,10 +211,22 @@ export class RailnavContentComponent extends MatSidenavContent {
     return this.host.querySelector<HTMLElement>(`#${CSS.escape(id)}`);
   }
 
-  private writeFragment(id: string): void {
+  /** The id the URL fragment names; none for a malformed one (`#50%`). */
+  private fragmentId(): string {
+    try {
+      return decodeURIComponent(this.doc.location.hash.slice(1));
+    } catch {
+      return '';
+    }
+  }
+
+  /** Points the URL fragment at `#id`, or removes it. */
+  private writeFragment(id: string | null): void {
     const view = this.doc.defaultView;
-    const fragment = `#${encodeURIComponent(id)}`;
-    if (!view || this.doc.location.hash === fragment) return;
-    view.history.replaceState(view.history.state, '', fragment);
+    if (!view) return;
+    // The whole URL: a bare `#id` would resolve against the document's `<base href>`, losing the path.
+    const url = new URL(this.doc.location.href);
+    url.hash = id ? encodeURIComponent(id) : '';
+    if (url.href !== this.doc.location.href) view.history.replaceState(view.history.state, '', url.href);
   }
 }
