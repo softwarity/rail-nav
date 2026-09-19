@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, viewChild, provideZonelessChangeDetection, signal } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { RailnavComponent } from './railnav.component';
 import { RailnavItemComponent } from './railnav-item.component';
 
@@ -24,7 +24,7 @@ class TestHostComponent {
   autoCollapse = signal(true);
   label = signal('Test Label');
   badge = signal<string | number | boolean | undefined>(undefined);
-  active = signal(false);
+  active = signal<boolean | undefined>(false);
   routerLink = signal<string | any[] | undefined>(undefined);
   clickCount = 0;
 
@@ -378,6 +378,53 @@ describe('RailnavItemComponent with router link', () => {
     await fixture.whenStable();
 
     expect(component.railnav().expanded()).toBe(false);
+  });
+
+  describe('active state', () => {
+    const navigateTo = async (url: string): Promise<void> => {
+      await TestBed.inject(Router).navigateByUrl(url);
+      await fixture.whenStable();
+    };
+    const lit = (): boolean => fixture.nativeElement.querySelector('a.rail-item').classList.contains('active');
+
+    it('should leave it to the router when active is not set', async () => {
+      component.active.set(undefined);
+      await navigateTo('/home');
+      expect(lit()).toBe(true);
+      await navigateTo('/settings');
+      expect(lit()).toBe(false);
+    });
+
+    it('should match the link as a prefix of the URL when active is not set', async () => {
+      component.active.set(undefined);
+      component.routerLink.set('/');
+      await navigateTo('/settings');
+      expect(lit()).toBe(true);
+    });
+
+    it('should light an item the router does not match when active is true', async () => {
+      // Bound before the navigation, as in an app: the router's verdict comes last.
+      component.active.set(true);
+      await fixture.whenStable();
+      await navigateTo('/settings');
+      expect(lit()).toBe(true);
+    });
+
+    it('should keep an item the router matches off when active is false', async () => {
+      // A link to the root matches every URL: the rail would light two items at once.
+      component.routerLink.set('/');
+      await navigateTo('/settings');
+      expect(lit()).toBe(false);
+    });
+
+    it('should hand back to the router once active is unset', async () => {
+      component.active.set(false);
+      await navigateTo('/home');
+      expect(lit()).toBe(false);
+      component.active.set(undefined);
+      await fixture.whenStable();
+      expect(lit()).toBe(true);
+    });
   });
 });
 

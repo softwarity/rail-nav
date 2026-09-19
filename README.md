@@ -158,7 +158,7 @@ Navigation item with MD3 pill animation.
 | `routerLink` | `string \| any[]` | - | Router link for navigation |
 | `label` | `string` | - | Label text (below icon when collapsed, beside when expanded) |
 | `badge` | `string \| number \| boolean` | - | Badge value. Use `true` for a small dot badge |
-| `active` | `boolean` | `false` | Whether this item is active (for non-router usage). An `anchor` item is also active while its section is in view |
+| `active` | `boolean` | - | Whether this item is active. On a `routerLink` item, left unset the router decides (the link matches the URL, as a prefix); set, it decides alone: `false` keeps off an item whose link is a prefix of the URL, such as the root. An `anchor` item is also active while its section is in view |
 | `anchor` | `string` | - | Id of an element inside `rail-nav-content`: a click scrolls to it, and the item is active while that section is in view. See [Scroll-spy](#scroll-spy). Ignored with `routerLink` |
 | `for` | `TemplateRef \| null` | `null` | Template projected as a contextual drawer when the item is hovered or clicked. Aliased to `for` for `mat-datepicker-toggle`-style ergonomics. See [Contextual drawer](#contextual-drawer). |
 

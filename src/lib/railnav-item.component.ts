@@ -30,9 +30,10 @@ import { NgTemplateOutlet } from '@angular/common';
         class="rail-item"
         [class.expanded]="expanded()"
         [class.position-end]="position() === 'end'"
-        [class.active]="active()"
         [routerLink]="routerLink()"
-        routerLinkActive="active"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [class.active]="active() ?? rla.isActive"
         (click)="onRouterLinkClick()">
         <ng-container [ngTemplateOutlet]="iconTpl" />
       </a>
@@ -283,8 +284,10 @@ export class RailnavItemComponent {
   /** Badge value (number, text, or true for dot badge) */
   readonly badge = input<string | number | boolean>();
 
-  /** Whether this item is active (for non-router usage). An `anchor` item is also active while its section is in view. */
-  readonly active = input(false);
+  /** Whether this item is active. On a `routerLink` item, left unset the router decides (the link
+   * matches the URL, as a prefix); set, it decides alone, `false` included. An `anchor` item is also
+   * active while its section is in view. */
+  readonly active = input<boolean>();
 
   /** Id of an element inside `rail-nav-content`: a click scrolls to it, and the item turns active
    * while that section is in view (scroll-spy). Ignored on a `routerLink` item. */
@@ -337,7 +340,7 @@ export class RailnavItemComponent {
     return !!id && this.anchors?.active() === id;
   });
 
-  protected readonly isActive = computed(() => this.active() || this.anchorActive());
+  protected readonly isActive = computed(() => (this.active() ?? false) || this.anchorActive());
 
   /** Pending hover-intent timer, cleared on leave or destroy. */
   private enterTimeout?: ReturnType<typeof setTimeout>;
