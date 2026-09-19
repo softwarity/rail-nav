@@ -2,6 +2,10 @@
 
 ## NEXT RELEASE
 
+---
+
+## 1.2.1
+
 ### Fixes
 
 - **`anchorFragment` keeps the path of the URL.** The fragment was written as a bare `#id`, which `history.replaceState()` resolves against the document's `<base href>` rather than the page: in an Angular app (`<base href="/">`), `/users/42` turned into `/#section` in the address bar — unseen by the Router, but a reload or a copied link opened the root. The fragment is now set on the whole current URL.
